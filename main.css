@@ -2,15 +2,6 @@ body {
     font-family: sans-serif;
 }
 
-ul {
-    font-family: 'Franklin Gothic Medium';
-    font-size: 128px;
-}
-
-li {
-    list-style: circle;
-}
-
 .list {
     list-style: square;
 }
@@ -22,4 +13,9 @@ li {
     font-weight: bold;
     text-shadow: 2px 2px 2px crimson;
     font-size: 100px;
+}
+
+.black-section {
+    background-color: darkslategray;
+    width: 100%;
 }
