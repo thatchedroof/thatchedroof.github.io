@@ -31,4 +31,9 @@ function dateDiffFormatted (a, b) {
         String(milliseconds % 1000).padStart(3, '0')
 }
 
+function topFunction () {
+  document.body.scrollTop = 0 // For Safari
+  document.documentElement.scrollTop = 0 // For Chrome, Firefox, IE and Opera
+}
+
 setInterval(updateTime, 1)

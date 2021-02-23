@@ -25,7 +25,37 @@ body {
     margin: 0;
 }
 
+.black-section h1 {
+    text-align: center;
+    color: royalblue;
+    font-style: italic;
+    font-weight: bold;
+    text-shadow: 2px 2px 2px greenyellow;
+    font-size: 100px;
+    margin: 0;
+    padding: 20px;
+}
+
+.black-section p {
+    color: rgb(222, 227, 245);
+    font-family: monospace;
+    font-size: 25px;
+    margin-left: 35vw;
+    margin-right: 35vw;
+    margin-top: 0;
+}
+
 .black-section-footer {
     padding: 5px;
     margin-bottom: 0;
+    cursor: grab;
+}
+
+.black-section-footer:hover {
+    color: #555;
+}
+
+#funny-the {
+    padding-top: 45px;
+    padding-bottom: 75px;
 }
