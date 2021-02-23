@@ -25,9 +25,9 @@ function dateDiffFormatted (a, b) {
   const seconds = Math.floor((utc2 - utc1) / 1000)
   const milliseconds = utc2 - utc1
   return String(days) + ':' +
-        String(hours % 24) + ':' +
-        String(minutes % 60) + ':' +
-        String(seconds % 60) + ':' +
+        String(hours % 24).padStart(2, '0') + ':' +
+        String(minutes % 60).padStart(2, '0') + ':' +
+        String(seconds % 60).padStart(2, '0') + ':' +
         String(milliseconds % 1000).padStart(3, '0')
 }
 
