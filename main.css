@@ -48,7 +48,7 @@ body {
 .black-section-footer {
     padding: 5px;
     margin-bottom: 0;
-    cursor: grab;
+    cursor: pointer;
 }
 
 .black-section-footer:hover {
