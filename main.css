@@ -15,8 +15,11 @@ li {
     list-style: square;
 }
 
-#date {
-    font-size: 12px;
+.bigtimer {
+    text-align: center;
+    color: crimson;
     font-style: italic;
     font-weight: bold;
+    text-shadow: 2px 2px 2px crimson;
+    font-size: 100px;
 }

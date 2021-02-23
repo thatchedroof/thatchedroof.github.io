@@ -28,7 +28,7 @@ function dateDiffFormatted (a, b) {
         String(hours % 24) + ':' +
         String(minutes % 60) + ':' +
         String(seconds % 60) + ':' +
-        String(milliseconds % 1000)
+        String(milliseconds % 1000).padStart(3, '0')
 }
 
 setInterval(updateTime, 1)
