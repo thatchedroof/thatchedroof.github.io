@@ -72,14 +72,57 @@ const render = Render.create({
 })
 
 // create two boxes and a ground
-const boxA = Bodies.rectangle(400, 200, 80, 80, { render: { fillStyle: 'crimson' }, plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } } })
-const boxB = Bodies.rectangle(450, 50, 80, 80, { render: { fillStyle: 'royalblue' }, plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } } })
+// const boxA = Bodies.rectangle(400, 200, 80, 80, { render: { fillStyle: 'crimson' }, plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } } })
+// const boxB = Bodies.rectangle(450, 50, 80, 80, { render: { fillStyle: 'royalblue' }, plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } } })
+
+function betterStack (vw, vh, size, columns, rows, color1, color2) {
+  let whichColor = true
+  const startingX = width * vw
+  const startingY = height - (size * width) - (height * vh)
+  return Matter.Composites.stack(startingX, startingY, columns, rows, 0, 0, function (x, y) {
+    whichColor = !whichColor
+    if (whichColor) {
+      return Bodies.rectangle(x, y, (size * width) / columns, (size * width) / rows, {
+        render: { fillStyle: color1 },
+        plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } }
+      })
+    } else {
+      return Bodies.rectangle(x, y, (size * width) / columns, (size * width) / rows, {
+        render: { fillStyle: color2 },
+        plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } }
+      })
+    }
+  })
+}
+
+function betterRectangle (vw, vh, wsize, hsize, color) {
+  const startingX = (2 * width * vw + wsize * width) / 2
+  const startingY = ((2 * height - (hsize * height)) / 2) - (height * vh)
+  console.log(width, height, startingX, startingY)
+  return Bodies.rectangle(startingX, startingY, wsize * width, hsize * height, { render: { fillStyle: color }, plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } } })
+}
+
+function betterSquare (vw, vh, size, color) {
+  const startingX = (2 * width * vw + size * width) / 2
+  const startingY = ((2 * height - (size * width)) / 2) - (height * vh)
+  console.log(width, height, startingX, startingY)
+  return Bodies.rectangle(startingX, startingY, size * width, size * width, { render: { fillStyle: color }, plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } } })
+}
+
+const boxA = betterSquare(1 / 10, 1 / 10, 1 / 10, 'crimson')
+const boxB = betterSquare(1 / 10, 2 / 10, 1 / 10, 'royalblue')
+const rectA = betterRectangle(1 / 10, 3 / 10, 3 / 10, 1 / 30, 'greenyellow')
+
+console.log(boxA)
+
+const stack = betterStack(7 / 10 - 0.001, 0, 3 / 10, 9, 9, 'crimson', 'royalblue')
 
 const mouse = Matter.Mouse.create(render.canvas)
 const mouseConstraint = Matter.MouseConstraint.create(engine, {
   mouse: mouse,
   constraint: {
-    render: { visible: false }
+    render: { visible: false },
+    angularStiffness: 0
   }
 })
 
@@ -94,7 +137,7 @@ const xOrigin = 0
 const yOrigin = 0
 
 World.add(engine.world, [
-  boxA, boxB,
+  boxA, boxB, rectA, stack,
   // top
   Bodies.rectangle(xOrigin + width / 2, yOrigin + -borderSize / 2, 2 * borderSize + width, borderSize - 1, {
     isStatic: true,
@@ -111,7 +154,7 @@ World.add(engine.world, [
     render: { fillStyle: 'white' }
   }),
   // left
-  Bodies.rectangle(xOrigin - (borderSize / 2), yOrigin + height / 2, borderSize, 2 * borderSize + height, {
+  Bodies.rectangle(xOrigin - borderSize / 2, yOrigin + height / 2, borderSize, 2 * borderSize + height, {
     isStatic: true,
     render: { fillStyle: 'white' }
   }),
