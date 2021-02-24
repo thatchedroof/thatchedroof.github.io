@@ -72,8 +72,8 @@ const render = Render.create({
 })
 
 // create two boxes and a ground
-const boxA = Bodies.rectangle(400, 200, 80, 80, { render: { fillStyle: 'white' }, plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } } })
-const boxB = Bodies.rectangle(450, 50, 80, 80, { render: { fillStyle: 'white' }, plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } } })
+const boxA = Bodies.rectangle(400, 200, 80, 80, { render: { fillStyle: 'crimson' }, plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } } })
+const boxB = Bodies.rectangle(450, 50, 80, 80, { render: { fillStyle: 'royalblue' }, plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } } })
 
 const mouse = Matter.Mouse.create(render.canvas)
 const mouseConstraint = Matter.MouseConstraint.create(engine, {

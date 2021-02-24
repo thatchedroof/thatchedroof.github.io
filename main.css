@@ -59,3 +59,27 @@ body {
     padding-top: 45px;
     padding-bottom: 75px;
 }
+
+a:link {
+    color: royalblue;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+a:visited {
+    color: royalblue;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+a:hover {
+    color: crimson;
+    background-color: transparent;
+    text-decoration: underline;
+}
+
+a:active {
+    color: greenyellow;
+    background-color: transparent;
+    text-decoration: underline;
+}
