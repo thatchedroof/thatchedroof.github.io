@@ -21,7 +21,7 @@ body {
     background-color: rgb(31, 31, 31);
     width: 100%;
     height: 100%;
-    color: white;
+    color: rgb(222, 227, 245);
     margin: 0;
 }
 
@@ -40,8 +40,8 @@ body {
     color: rgb(222, 227, 245);
     font-family: monospace;
     font-size: 25px;
-    margin-left: 35vw;
-    margin-right: 35vw;
+    margin-left: 33.3vw;
+    margin-right: 33.3vw;
     margin-top: 0;
 }
 
