@@ -75,6 +75,10 @@ const render = Render.create({
 // const boxA = Bodies.rectangle(400, 200, 80, 80, { render: { fillStyle: 'crimson' }, plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } } })
 // const boxB = Bodies.rectangle(450, 50, 80, 80, { render: { fillStyle: 'royalblue' }, plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } } })
 
+function toMidCoords (x, y, wsize, hsize) {
+  return [x + wsize / 2, y + hsize / 2, wsize, hsize]
+}
+
 function betterStack (vw, vh, size, columns, rows, color1, color2) {
   let whichColor = true
   const startingX = width * vw
@@ -96,10 +100,10 @@ function betterStack (vw, vh, size, columns, rows, color1, color2) {
 }
 
 function betterRectangle (vw, vh, wsize, hsize, color) {
-  const startingX = (2 * width * vw + wsize * width) / 2
-  const startingY = ((2 * height - (hsize * height)) / 2) - (height * vh)
+  const startingX = width * vw
+  const startingY = height * vh
   console.log(width, height, startingX, startingY)
-  return Bodies.rectangle(startingX, startingY, wsize * width, hsize * height, { render: { fillStyle: color }, plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } } })
+  return Bodies.rectangle(...toMidCoords(startingX, startingY, wsize * width, hsize * height), { render: { fillStyle: color }, plugin: { wrap: { min: { x: 0, y: 0 }, max: { x: width, y: height } } } })
 }
 
 function betterSquare (vw, vh, size, color) {
