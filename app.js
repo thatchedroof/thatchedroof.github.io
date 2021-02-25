@@ -9,7 +9,7 @@ let selectElement
 
 function updateTime () {
   today = new Date()
-  theDay = new Date('9/10/21')
+  theDay = new Date('2021-08-11T14:26:00Z')
   formatDate = dateDiffFormatted(today, theDay)
   selectElement = document.getElementById('date')
   selectElement.innerHTML = formatDate
