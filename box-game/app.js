@@ -136,7 +136,7 @@ render.mouse = mouse
 mouseConstraint.mouse.element.removeEventListener('mousewheel', mouseConstraint.mouse.mousewheel)
 mouseConstraint.mouse.element.removeEventListener('DOMMouseScroll', mouseConstraint.mouse.mousewheel)
 
-const borderSize = 200
+const borderSize = 500
 
 const xOrigin = 0
 const yOrigin = 0
