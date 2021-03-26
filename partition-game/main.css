@@ -50,7 +50,7 @@ body {
     user-select: none;
 }
 
-#ctop {
+#dice-canvas {
     grid-column: 2 / 5;
 }
 
