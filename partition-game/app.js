@@ -13,8 +13,17 @@ let tempFlipped = Array(10).fill(0)
 let r1
 let r2
 let roll
-reroll()
-buttonUpdate()
+
+const root = document.querySelector(':root')
+const die1 = document.querySelector('#die1')
+const die2 = document.querySelector('#die2')
+
+die1.addEventListener("animationiteration", changeAnimation)
+die1.addEventListener("click", rolldie1)
+die2.addEventListener("animationiteration", changeAnimation)
+die2.addEventListener("click", rolldie2)
+
+changeAnimation()
 
 function flip(ele, md = false) {
     if ((mouseDown || md) && !ele.classList.contains('flip-real-up')) {
@@ -55,10 +64,30 @@ function flippedUpdate() {
     }
 }
 
-function reroll() {
+function rolldie1() {
+    die1.removeEventListener("animationiteration", changeAnimation)
+    die1.removeEventListener("click", rolldie1)
+    die1.style.animation = "linear .001"
+    die1.style.transform = "translate(0, 0);"
     r1 = Math.floor(Math.random() * 6) + 1
+    changeDieState(die1, r1)
+    if (typeof r2 !== "undefined") {
+        roll = r1 + r2
+        buttonUpdate()
+    }
+}
+
+function rolldie2() {
+    die2.removeEventListener("animationiteration", changeAnimation)
+    die2.removeEventListener("click", rolldie2)
+    die2.style.animation = "linear .001"
+    die2.style.transform = "translate(0, 0);"
     r2 = Math.floor(Math.random() * 6) + 1
-    roll = r1 + r2
+    changeDieState(die2, r2)
+    if (typeof r1 !== "undefined") {
+        roll = r1 + r2
+        buttonUpdate()
+    }
 }
 
 function sumButtonClick() {
@@ -74,5 +103,33 @@ function sumButtonClick() {
     } else {
         reroll()
         buttonUpdate()
+    }
+}
+
+function changeAnimation() {
+    changeDieState(die1, Math.floor(Math.random() * 6) + 1)
+    changeDieState(die2, Math.floor(Math.random() * 6) + 1)
+    const shakeStrength = 10
+    let die1pixelsx = (Math.random() - .5) * shakeStrength
+    let die1pixelsy = (Math.random() - .5) * shakeStrength
+    let die2pixelsx = (Math.random() - .5) * shakeStrength
+    let die2pixelsy = (Math.random() - .5) * shakeStrength
+
+    document.getElementById("keyframe-style").innerHTML = '@keyframes shake-die1 {100% {transform: translate(' + Math.round(die1pixelsx * 100) / 100 + 'px, ' + Math.round(die1pixelsy * 100) / 100 + 'px);}}\n@keyframes shake-die2 {100% {transform: translate(' + Math.round(die2pixelsx * 100) / 100 + 'px, ' + Math.round(die2pixelsy * 100) / 100 + 'px);}}'
+
+    console.log(die1pixelsx, die1pixelsy, die2pixelsx, die2pixelsy)
+}
+
+function changeDieState(die, state) {
+    const pipClasses = ["one", "two", "three", "four", "five", "six"]
+    let pips = die.querySelectorAll(".pip")
+    console.log(pips)
+    for (let j = 0; j < pips.length; j++) {
+        pips[j].setAttribute("fill", "#FFF1DC")
+    }
+    let numPips = die.querySelectorAll("." + pipClasses[state - 1])
+    console.log(numPips)
+    for (let j = 0; j < numPips.length; j++) {
+        numPips[j].setAttribute("fill", "#1F1F1F")
     }
 }

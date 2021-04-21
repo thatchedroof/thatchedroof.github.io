@@ -50,8 +50,19 @@ body {
     user-select: none;
 }
 
-#dice-canvas {
-    grid-column: 2 / 5;
+#die1, #die2 {
+    margin: auto;
+    animation-direction: alternate-reverse;
+}
+
+#die1 {
+    grid-column: 2 / 3;
+    animation: shake-die1 .001s infinite;
+}
+
+#die2 {
+    grid-column: 5 / 6;
+    animation: shake-die2 .001s infinite;
 }
 
 .sum-button-allowed,
