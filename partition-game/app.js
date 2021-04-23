@@ -22,6 +22,7 @@ reroll()
 buttonUpdate()
 
 let start = Date.now()
+let timerInterval
 starttimer()
 
 function reroll() {
@@ -35,14 +36,16 @@ function reroll() {
 }
 
 function starttimer() {
-    setInterval(function() {
+    timerInterval = setInterval(function() {
         var delta = Date.now() - start
-        Math.floor(delta / 1000)
-    }, 1000)
+        let timer = document.getElementById('timer')
+        timer.innerHTML = (Math.floor(delta/100)/10).toFixed(1)
+    }, 10)
 }
 
 function stoptimer() {
-
+    clearInterval(timerInterval)
+    console.log('timer averted')
 }
 
 function resettimer() {
@@ -130,6 +133,7 @@ function sumButtonClick() {
     flippedUpdate()
     tempFlipped = Array(10).fill(0)
     if (flipped.every(e => e)) {
+        stoptimer()
         document.getElementById('sum-button').innerHTML = 'You Win!'
     } else {
         reroll()

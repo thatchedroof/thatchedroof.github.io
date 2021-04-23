@@ -104,3 +104,14 @@ body {
     border-style: inset;
     padding: 0.17em 0.35em 0.23em 0.25em;
 }
+
+#timer {
+    font-family: sans-serif;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    margin: 0, auto;
+    font-size: 25px;
+    grid-row: 12 / 13;
+    grid-column: 1 / 7;
+}
