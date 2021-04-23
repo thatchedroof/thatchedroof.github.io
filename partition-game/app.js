@@ -21,6 +21,9 @@ const die2 = document.querySelector('#die2')
 reroll()
 buttonUpdate()
 
+let start = Date.now()
+starttimer()
+
 function reroll() {
     r1 = Math.floor(Math.random() * 6) + 1
     changeDieState(die1, r1)
@@ -31,6 +34,20 @@ function reroll() {
     roll = r1 + r2
 }
 
+function starttimer() {
+    setInterval(function() {
+        var delta = Date.now() - start
+        Math.floor(delta / 1000)
+    }, 1000)
+}
+
+function stoptimer() {
+
+}
+
+function resettimer() {
+
+}
 
 //die1.addEventListener("animationiteration", changeAnimation)
 //die1.addEventListener("click", rolldie1)
