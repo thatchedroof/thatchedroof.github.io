@@ -21,6 +21,10 @@ const die2 = document.querySelector('#die2')
 reroll()
 buttonUpdate()
 
+let start = Date.now()
+let timerInterval
+starttimer()
+
 function reroll() {
     r1 = Math.floor(Math.random() * 6) + 1
     changeDieState(die1, r1)
@@ -31,6 +35,22 @@ function reroll() {
     roll = r1 + r2
 }
 
+function starttimer() {
+    timerInterval = setInterval(function() {
+        var delta = Date.now() - start
+        let timer = document.getElementById('timer')
+        timer.innerHTML = (Math.floor(delta/100)/10).toFixed(1)
+    }, 10)
+}
+
+function stoptimer() {
+    clearInterval(timerInterval)
+    console.log('timer averted')
+}
+
+function resettimer() {
+
+}
 
 //die1.addEventListener("animationiteration", changeAnimation)
 //die1.addEventListener("click", rolldie1)
@@ -113,6 +133,7 @@ function sumButtonClick() {
     flippedUpdate()
     tempFlipped = Array(10).fill(0)
     if (flipped.every(e => e)) {
+        stoptimer()
         document.getElementById('sum-button').innerHTML = 'You Win!'
     } else {
         reroll()
