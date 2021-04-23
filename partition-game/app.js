@@ -18,12 +18,26 @@ const root = document.querySelector(':root')
 const die1 = document.querySelector('#die1')
 const die2 = document.querySelector('#die2')
 
-die1.addEventListener("animationiteration", changeAnimation)
-die1.addEventListener("click", rolldie1)
-die2.addEventListener("animationiteration", changeAnimation)
-die2.addEventListener("click", rolldie2)
+reroll()
+buttonUpdate()
 
-changeAnimation()
+function reroll() {
+    r1 = Math.floor(Math.random() * 6) + 1
+    changeDieState(die1, r1)
+
+    r2 = Math.floor(Math.random() * 6) + 1
+    changeDieState(die2, r2)
+
+    roll = r1 + r2
+}
+
+
+//die1.addEventListener("animationiteration", changeAnimation)
+//die1.addEventListener("click", rolldie1)
+//die2.addEventListener("animationiteration", changeAnimation)
+//die2.addEventListener("click", rolldie2)
+
+//changeAnimation()
 
 function flip(ele, md = false) {
     if ((mouseDown || md) && !ele.classList.contains('flip-real-up')) {
