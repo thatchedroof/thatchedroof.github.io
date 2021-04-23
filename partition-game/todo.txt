@@ -1,0 +1,7 @@
+TODO:
+- Lose condition
+- Win animation
+- Number key support
+- Phone implementation
+- Dice animation
+- Polish timer
