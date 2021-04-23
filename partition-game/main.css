@@ -11,7 +11,7 @@ body {
     display: grid;
     background-color: rgb(31, 31, 31);
     grid-template-columns: auto 110px 10px 10px 110px auto;
-    grid-template-rows: auto repeat(10, 30px) auto;
+    grid-template-rows: auto repeat(10, 30px) auto 30px;
     row-gap: 3px;
     width: 100vw;
     height: 100vh;
@@ -110,8 +110,8 @@ body {
     text-align: center;
     font-weight: bold;
     color: white;
-    margin: 0, auto;
+    margin: auto;
     font-size: 25px;
-    grid-row: 12 / 13;
+    grid-row: 13 / 14;
     grid-column: 1 / 7;
 }
