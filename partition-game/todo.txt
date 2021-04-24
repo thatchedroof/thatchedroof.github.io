@@ -5,3 +5,4 @@ TODO:
 - Phone implementation
 - Dice animation
 - Polish timer
+- Sound effects!!
