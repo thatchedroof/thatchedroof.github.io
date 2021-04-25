@@ -1,17 +1,23 @@
 :root {
     background-color: rgb(31, 31, 31);
-    color: rgb(255, 255, 255);
+    color: rgb(222, 227, 245);
+    font-family: monospace;
 }
 
 body {
     margin: 0;
-    font: monospace;
+}
+
+#title {
+    margin: 0 auto;
+    padding: 1em;
 }
 
 ul {
+    width: 300px;
+    margin: 0 auto;
     list-style: none;
-    padding: 0;
-    margin: 0;
+    padding: 1em;
 }
 
 li {
@@ -20,5 +26,27 @@ li {
 
 input,
 textarea {
+    background-color: rgb(43, 43, 43);
+    color: rgb(222, 227, 245);
+    font-family : inherit;
     width: 300px;
+    box-sizing: border-box;
+    border: 2px inset rgb(41, 41, 41);
+    padding: .25em;
+    padding-left: .5em;
+    margin-top: .25em;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: rgb(222, 227, 245);
+    border-style: solid;
+    border-radius: 2px;
+}
+
+button {
+    font-family : inherit;
+    background-color: rgb(43, 43, 43);
+    color: rgb(222, 227, 245);
 }
