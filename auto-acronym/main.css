@@ -1,0 +1,24 @@
+:root {
+    background-color: rgb(31, 31, 31);
+    color: rgb(255, 255, 255);
+}
+
+body {
+    margin: 0;
+    font: monospace;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    margin-top: 1em;
+}
+
+input,
+textarea {
+    width: 300px;
+}
