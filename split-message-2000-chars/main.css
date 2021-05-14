@@ -1,7 +1,7 @@
 :root {
     background-color: rgb(31, 31, 31);
     color: rgb(222, 227, 245);
-    font-family: monospace;
+    font-family: Helvetica, sans-serif;
 }
 
 body {
@@ -14,8 +14,7 @@ body {
 }
 
 ul {
-    width: 300px;
-    margin: 0 auto;
+    width: 90%;
     list-style: none;
     padding: 1em;
 }
@@ -29,7 +28,8 @@ textarea {
     background-color: rgb(43, 43, 43);
     color: rgb(222, 227, 245);
     font-family: inherit;
-    width: 300px;
+    font-size: inherit;
+    width: 90%;
     box-sizing: border-box;
     border: 2px inset rgb(41, 41, 41);
     padding: .25em;
@@ -47,6 +47,13 @@ textarea:focus {
 
 button {
     font-family: inherit;
+    font-size: inherit;
     background-color: rgb(43, 43, 43);
     color: rgb(222, 227, 245);
+    cursor: pointer;
+}
+
+button:active {
+    background-color: rgb(222, 227, 245);
+    color: rgb(43, 43, 43);
 }
