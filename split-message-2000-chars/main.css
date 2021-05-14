@@ -47,13 +47,73 @@ textarea:focus {
 
 button {
     font-family: inherit;
-    font-size: inherit;
+    font-size: 150%;
+    font-style: italic;
+    font-weight: bold;
     background-color: rgb(43, 43, 43);
     color: rgb(222, 227, 245);
+    padding: .25em;
     cursor: pointer;
 }
 
 button:active {
-    background-color: rgb(222, 227, 245);
-    color: rgb(43, 43, 43);
+    background-color: rgb(68, 68, 68);
+}
+
+.output-item {
+    display: grid;
+    grid-template-columns: 7em auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.output-text {
+    padding: 10px;
+    grid-column: 2 / 3;
+}
+
+.copy-button {
+    margin: 10px;
+    grid-column: 1 / 2;
+    margin: auto;
+}
+
+#input {
+    grid-column: 1 / 2;
+}
+
+#option-buttons {
+    width: 15em;
+    display: grid;
+    grid-template-rows: auto auto auto auto auto;
+    grid-template-columns: 75% auto;
+    background-color: rgb(43, 43, 43);
+    border: 2px outset rgb(41, 41, 41);
+    border-radius: 1em;
+    -webkit-border-radius: 1em;
+    -moz-border-radius: 1em;
+    -ms-border-radius: 1em;
+    -o-border-radius: 1em;
+}
+
+.bc {
+    grid-row: 2 / 3;
+}
+
+.bw {
+    grid-row: 3 / 4;
+}
+
+.bl {
+    grid-row: 4 / 5;
+}
+
+.option-label {
+    padding: 1em;
+    cursor: pointer;
+}
+
+.option-button {
+    margin: auto;
+    cursor: pointer;
 }
