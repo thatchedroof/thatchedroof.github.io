@@ -17,6 +17,7 @@ function buttonPress(): void {
         outputItem.classList.add('output-item');
 
         //
+
         let outputText = document.createElement('textarea');
 
         //outputText.setAttribute('readonly', 'readonly');
@@ -30,6 +31,7 @@ function buttonPress(): void {
         outputText.classList.add('output-text');
 
         //
+
         let outputClip = document.createElement('button');
 
         outputClip.setAttribute('onclick', `selectOutput(${i})`);
@@ -75,6 +77,7 @@ function buttonPress(): void {
         outputClip.style.borderColor = color;
 
         //
+
         outputItem.appendChild(outputClip);
 
         outputItem.appendChild(outputText);
@@ -92,4 +95,10 @@ function selectOutput(i: number) {
     outputText.setSelectionRange(0, 99999);
 
     document.execCommand('copy');
+}
+
+function splitText(text: string): string[] {
+    let out: string[] = [];
+
+    return out;
 }

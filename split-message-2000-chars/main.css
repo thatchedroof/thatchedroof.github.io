@@ -85,7 +85,7 @@ button:active {
 #option-buttons {
     width: 15em;
     display: grid;
-    grid-template-rows: auto auto auto auto auto;
+    grid-template-rows: auto auto auto;
     grid-template-columns: 75% auto;
     background-color: rgb(43, 43, 43);
     border: 2px outset rgb(41, 41, 41);
@@ -97,15 +97,15 @@ button:active {
 }
 
 .bc {
-    grid-row: 2 / 3;
+    grid-row: 1 / 2;
 }
 
 .bw {
-    grid-row: 3 / 4;
+    grid-row: 2 / 3;
 }
 
 .bl {
-    grid-row: 4 / 5;
+    grid-row: 3 / 4;
 }
 
 .option-label {
