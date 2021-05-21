@@ -7,7 +7,11 @@ function buttonPress(): void {
 
     let input = inp.value;
 
-    let splitInp = <string[]>input.match(/(.|[\r\n]){1,2000}/g);
+    let options = {
+        break: (<HTMLInputElement>document.querySelector('input[name="break"]:checked')).value
+    };
+
+    let splitInp = splitText(input, 2000, options);
 
     console.log(splitInp);
 
@@ -97,8 +101,52 @@ function selectOutput(i: number) {
     document.execCommand('copy');
 }
 
-function splitText(text: string): string[] {
-    let out: string[] = [];
+function splitText(input: string, maxLength: number, options: {break: string}): string[] {
+    console.log(options.break)
+
+    if (options.break === 'bc') {
+        let out = <string[]>input.match(new RegExp(`(.|[\r\n]){1,${maxLength}}`, 'g'));
+        return out;
+    }
+
+    let out: string[] = [''];
+
+    let strings: string[] = [];
+
+    if (options.break === 'bw'){
+        strings = <string[]>input.match(/[^\s]+\s?|\s/g);
+    } else {
+        strings = <string[]>input.match(/[^(\r|\n)]+(\r|\n)?|(\r|\n)/g);
+    }
+
+    console.log('strings:', strings)
+
+    for (let str of strings) {
+        console.log(out[out.length-1], str)
+
+        if ((out[out.length-1] + str).length <= maxLength) {
+            out[out.length-1] += str
+
+        } else if (str.length <= maxLength) {
+            out[out.length-1] = out[out.length-1]
+            out.push(str)
+
+        } else {
+            let outLast = out.pop()!;
+
+            let newOptions = options;
+
+            if (options.break === 'bw') {
+                newOptions = Object.assign({}, options, {break: "bc"});
+            } else {
+                newOptions = Object.assign({}, options, {break: "bw"});
+            }
+
+            out = out.concat(splitText(outLast.concat(str), maxLength, newOptions))
+        }
+
+        console.log('out:', out)
+    }
 
     return out;
 }
