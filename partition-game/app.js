@@ -25,6 +25,9 @@ let start = Date.now()
 let timerInterval
 starttimer()
 
+/**
+ * Rerolls both dice on the page
+ */
 function reroll() {
     r1 = Math.floor(Math.random() * 6) + 1
     changeDieState(die1, r1)
@@ -35,6 +38,9 @@ function reroll() {
     roll = r1 + r2
 }
 
+/**
+ * Starts the page timer
+ */
 function starttimer() {
     timerInterval = setInterval(function() {
         var delta = Date.now() - start
@@ -43,11 +49,16 @@ function starttimer() {
     }, 10)
 }
 
+/**
+ * Stops the page timer
+ */
 function stoptimer() {
     clearInterval(timerInterval)
     console.log('timer averted')
 }
-
+/**
+ * Resets the page timer
+ */
 function resettimer() {
 
 }
@@ -59,6 +70,12 @@ function resettimer() {
 
 //changeAnimation()
 
+/**
+ * @param  {} ele
+ * @param  {} md=false
+ * 
+ * Flips a single element
+ */
 function flip(ele, md = false) {
     if ((mouseDown || md) && !ele.classList.contains('flip-real-up')) {
         if (ele.classList.contains('flip-up')) {
