@@ -50,7 +50,8 @@ body {
     user-select: none;
 }
 
-#die1, #die2 {
+#die1,
+#die2 {
     margin: auto;
     animation-direction: alternate-reverse;
 }
