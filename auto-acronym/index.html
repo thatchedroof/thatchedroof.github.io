@@ -1,34 +1,60 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="twitter:card" content="summary" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="make acronyms" />
+        <meta property="og:description" content="automatic acronym generator" />
+        <meta
+            property="og:image"
+            content="https://cdn.discordapp.com/avatars/471354140639887400/44c9c22ebd692580a5b8476efb361c04.png"
+        />
+        <meta
+            property="og:url"
+            content="https://thatchedroof.github.io/auto-acronym/"
+        />
+        <title>Super Acronym Generator</title>
+        <link rel="stylesheet" href="main.css" />
+        <link
+            rel="icon"
+            type="image/png"
+            href="https://cdn.discordapp.com/avatars/471354140639887400/44c9c22ebd692580a5b8476efb361c04.png"
+        />
+    </head>
 
-<head>
-    <meta charset="utf-8">
-    <meta name="twitter:card" content="summary">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="make acronyms">
-    <meta property="og:description" content="automatic acronym generator">
-    <meta property="og:image" content="https://cdn.discordapp.com/avatars/471354140639887400/44c9c22ebd692580a5b8476efb361c04.png">
-    <meta property="og:url" content="https://thatchedroof.github.io/auto-acronym/">
-    <title>ThRoW</title>
-    <link rel="stylesheet" href="main.css">
-    <link rel="icon" type="image/png" href="https://cdn.discordapp.com/avatars/471354140639887400/44c9c22ebd692580a5b8476efb361c04.png">
-</head>
-
-<body>
-    <h1 id="title">The super auto mega acronym creator!!! (insert acronym)</h1>
-    <ul>
-        <li>
-            <label for="input">Text to acronymize (space separated)</label><br>
-            <input type="text" id="input" name="input"><br>
-        </li>
-        <li class="button">
-            <button type="button">Generate acronyms!</button>
-        </li>
-    </ul>
-    <script type="module" src="disylls.js"></script>
-    <script type="module" src="corncob.js"></script>
-    <script type="module" src="app.js"></script>
-    <noscript>ENABLE JAVASCRIPT RIGHT NOW</noscript>
-</body>
-
+    <body>
+        <h1 id="title">
+            The super auto mega acronym creator!!! (insert acronym)
+        </h1>
+        <ul>
+            <li>
+                <label for="input">Text to acronymize (space separated)</label
+                ><br />
+                <input type="text" id="input" name="input" /><br />
+            </li>
+            <li class="button">
+                <button
+                    type="button"
+                    onclick="
+                    window.importedButtonPress(
+                        getElementById('input').value
+                    );"
+                >
+                    Generate acronyms!
+                </button>
+            </li>
+        </ul>
+        <div id="acronyms"></div>
+        <script type="module" src="disylls.js"></script>
+        <script type="module" src="corncob.js"></script>
+        <script type="module" src="app.js"></script>
+        <script type="module">
+            import { buttonPress } from './app.js';
+            window.importedButtonPress = function importedButtonPress(text) {
+                buttonPress(text);
+            };
+        </script>
+        <noscript>ENABLE JAVASCRIPT RIGHT NOW</noscript>
+    </body>
 </html>

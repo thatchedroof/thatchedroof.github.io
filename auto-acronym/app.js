@@ -1,7 +1,72 @@
 import { corncob } from './corncob.js';
 import { disylls } from './disylls.js';
 let cob = corncob.filter((word) => word.length > 2);
-console.log(getAcronyms('app index main', disylls, cob).sort((x, y) => y[1] - x[1]));
+let usedDisylls = [];
+//let usedCorncob: string[] = [];
+//let lastCorncobAdd = 0;
+export function buttonPress(text) {
+    let acronyms = getAcronyms(text, disylls, cob).sort((x, y) => y[1] - x[1]);
+    console.log(acronyms);
+    let acroDiv = document.getElementById('acronyms');
+    acroDiv.innerHTML = ``;
+    for (let i = 0; i < acronyms.length; i++) {
+        if (acroDiv.offsetHeight > 500) {
+            console.log('yay', acroDiv.offsetHeight, acronyms[i][0]);
+            acroDiv.lastElementChild
+                .style.visibility = 'hidden';
+            break;
+        }
+        acroDiv.innerHTML += `
+            <abbr>${acronyms[i][0] + '&nbsp;'}</abbr>
+        `;
+    }
+}
+/*
+function getUnsortedAcronyms(
+    inp: string,
+    disylls: [string, number][],
+    corncob: string[],
+): [string, number][] {
+
+    lastCorncobAdd = 0;
+
+    //https://stackoverflow.com/questions/9960908/permutations-in-javascript
+    const permutator = (inputArr: string[]) => {
+        let result: string[][] = [];
+
+        const permute = (arr: string[], m: string[] = []) => {
+            if (arr.length === 0) {
+                result.push(m);
+            } else {
+                for (let i = 0; i < arr.length; i++) {
+                    let curr = arr.slice();
+                    let next = curr.splice(i, 1);
+                    permute(curr, m.concat(...next));
+                }
+            }
+        };
+
+        permute(inputArr);
+
+        return result;
+    };
+
+    let splitInp: string[] = String(inp).split(' ');
+
+    console.log(permutator(splitInp));
+
+    return permutator(splitInp)
+        .map((value) => ({ value, sort: Math.random() })) //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value)
+        .map((sInp) => {
+            console.log(sInp);
+            return getAcronyms(
+                sInp.join(' '), disylls, corncob
+            );
+        }).flat();
+}
+*/
 function getAcronyms(inp, disylls, corncob) {
     //split input into sylls
     let splitInp = String(inp)
@@ -72,13 +137,21 @@ function toDisylls(inp) {
 }
 function scoreDisylls(inp, disylls) {
     let inputDisylls = toDisylls(inp);
-    let score = 1;
+    //let score: number = 1;
     //amount of invalid disylls
     let fails = 1;
     //iterate through disylls
     for (let i = 0; i < inputDisylls.length; i++) {
-        //find input disyll in list of disylls
-        let index = disylls.findIndex((x) => x[0] === inputDisylls[i]);
+        //find input disyll in list of used disylls
+        let index = usedDisylls.findIndex((x) => x[0] === inputDisylls[i]);
+        //if not in usedDisylls
+        if (index === -1) {
+            let index = disylls.findIndex((x) => x[0] === inputDisylls[i]);
+            if (index !== -1) {
+                usedDisylls.push(disylls[index]);
+                console.log(disylls[index]);
+            }
+        }
         //add to score
         if (index === -1) {
             fails += 1;
@@ -88,7 +161,7 @@ function scoreDisylls(inp, disylls) {
         }
         else {
             //adjust for length and multiply into score
-            score *= disylls[index][1];
+            //score *= disylls[index][1];
         }
     }
     //root by length
@@ -99,15 +172,72 @@ function scoreCorncob(inp, corncob) {
     let score = 0;
     //iterate through every word
     for (let i = 0; i < corncob.length; i++) {
+        let word = corncob[i];
         //find word in input
-        let index = input.search(corncob[i]);
+        let index = input.search(word);
         //if word is in input
         if (index !== -1) {
-            score += corncob[i].length / input.length;
+            score += word.length / input.length;
         }
     }
+    /*
+    if (lastCorncobAdd <= 25) {
+
+        let addedCorncob = false;
+
+        //iterate through every word
+        for (let i = 0; i < corncob.length; i++) {
+
+            let word = corncob[i];
+
+            //find word in input
+            let index: number = input.search(word);
+
+            //if word is in input
+            if (index !== -1) {
+                score += word.length / input.length;
+
+                if (!usedCorncob.includes(word)) {
+                    usedCorncob.push(word);
+                    lastCorncobAdd = 0;
+                    addedCorncob = true;
+                    console.log(word);
+                }
+
+            }
+        }
+
+        if (!addedCorncob) {
+            lastCorncobAdd += 1;
+        }
+
+    } else {
+        for (let i = 0; i < usedCorncob.length; i++) {
+
+            let word = usedCorncob[i];
+
+            //find word in input
+            let index: number = input.search(word);
+
+            //if word is in input
+            if (index !== -1) {
+                score += word.length / input.length;
+            }
+        }
+    }
+
+    */
     return score;
 }
 function totalScore(acro, disylls, corncob) {
-    return Math.pow(scoreDisylls(acro, disylls) * scoreCorncob(acro, corncob), 1 / toSylls(acro).length);
+    //console.time('di');
+    let di = scoreDisylls(acro, disylls);
+    //console.timeEnd('di');
+    let co = 0;
+    if (di !== 0) {
+        //console.time('co');
+        co = scoreCorncob(acro, corncob);
+        //console.timeEnd('co');
+    }
+    return Math.pow(di * co, 1 / toSylls(acro).length);
 }

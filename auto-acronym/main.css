@@ -57,3 +57,24 @@ button:active {
     background-color: rgb(222, 227, 245);
     color: rgb(43, 43, 43);
 }
+
+#acronyms {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 30px;
+    gap: 15px 7px;
+}
+
+#acronyms::after {
+    content: "";
+    flex: auto;
+}
+
+abbr {
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 20px;
+    color: rgb(241, 243, 250);
+}
