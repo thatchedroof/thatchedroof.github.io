@@ -5,10 +5,9 @@
         "noImplicitReturns": true,
         "module": "es2015",
         "target": "es2015",
-        "lib": ["esnext", "DOM"],
+        "lib": ["es2015", "DOM"],
         "moduleResolution": "node",
         "resolveJsonModule": true,
-        "declaration": true,
         "allowSyntheticDefaultImports": true
     }
 }
