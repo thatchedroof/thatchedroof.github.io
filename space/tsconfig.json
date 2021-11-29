@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "noUnusedLocals": true,
+        "noImplicitReturns": true,
+        "noImplicitAny": true,
+        "module": "es2015",
+        "target": "es2015",
+        "lib": ["esnext", "DOM"],
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "typeRoots": ["node_modules/@types/"],
+        "allowSyntheticDefaultImports": true
+    },
+    "include": ["node_modules/@types/three/*.d.ts"]
+}
