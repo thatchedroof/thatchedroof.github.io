@@ -1,14 +1,14 @@
-type Mass = number;
-type Radius = number;
-type Density = number;
-type Gravity = number;
+declare type Mass = number;
+declare type Radius = number;
+declare type Density = number;
+declare type Gravity = number;
 
-type Length = number;
-type Eccentricity = number;
-type Angle = number;
-type Time = number;
+declare type Length = number;
+declare type Eccentricity = number;
+declare type Angle = number;
+declare type Time = number;
 
-type Planet = {
+declare type Planet = {
     mass: Mass;
     radius: Radius;
 };
@@ -19,6 +19,10 @@ export function planetDensity(planet: Planet): Density {
 
 export function planetGravity(planet: Planet): Gravity {
     return planet.mass / (planet.radius * planet.radius);
+}
+
+export function starRadius(star: Star): Gravity {// * 695508
+    return ((star.mass / 332967.75) ** 0.74) * 695508;
 }
 
 const giant: Planet = {
@@ -41,7 +45,7 @@ const moon: Planet = {
     radius: 1738.1
 };
 
-type Star = {
+declare type Star = {
     mass: Mass;
 };
 
@@ -54,7 +58,7 @@ const b: Star = {
 };
 
 const sun: Star = {
-    mass: 333030
+    mass: 332967.75
 };
 
 const ab: BinaryStar = {
@@ -68,17 +72,17 @@ const ab: BinaryStar = {
     θ: 0,
 };
 
-type BinaryStar = OrbitalElements & {
+declare type BinaryStar = OrbitalElements & {
     starA: Star;
     starB: Star;
 };
 
-type BinaryPlanet = OrbitalElements & {
+declare type BinaryPlanet = OrbitalElements & {
     planetA: Planet;
     planetB: Planet;
 };
 
-type OrbitalElements = {
+declare type OrbitalElements = {
     a: Length;
     e: Eccentricity;
     i: Angle;
@@ -87,16 +91,16 @@ type OrbitalElements = {
     θ: Angle;
 };
 
-type Orbit = OrbitalElements & {
+declare type Orbit = OrbitalElements & {
     body: System;
 };
 
-type System = {
+declare type System = {
     main: Star | Planet | BinaryStar | BinaryPlanet;
     orbits: Orbit[];
 };
 
-type SystemPair = {
+declare type SystemPair = {
     main: Star | Planet | BinaryStar | BinaryPlanet;
     orbit: Orbit;
 };
@@ -128,7 +132,7 @@ export function meanAnomaly(input: SystemPair, epoch: Time): Angle {
 }
 
 export function planetaryYear(input: SystemPair): Time {
-    return Math.sqrt(input.orbit.a ** 3 / (mass(input.main)));
+    return Math.sqrt((input.orbit.a ** 3) / ((mass(input.main) / 332967.75)));
 }
 // sqrt(0.00256955529 ** 3 / (1 / x)) = 0.07480519764
 // 0.00256955529 ** 3 / (1 / x) = 0.07480519764 ** 2
@@ -179,7 +183,9 @@ export function orbitCoordinates(inp: System, epoch: Time): [number, number, num
     }).flat();
 }
 
-export let auScale = 40;
+export function kmToAU(km: Radius) {
+    return km / 149700598.8024;
+}
 
 export const system: System = {
     main: ab,
@@ -191,7 +197,7 @@ export const system: System = {
                     main: nine,
                     orbits: []
                 },
-                a: 0.00826651492403 * auScale,
+                a: 0.00826651492403,
                 e: 0.00074,
                 i: 33.7 * (Math.PI / 180),
                 Ω: 0,
@@ -199,7 +205,7 @@ export const system: System = {
                 θ: 0,
             }]
         },
-        a: 1.1106 * auScale,
+        a: 1.1106,
         e: 0.00021,
         i: 58.23 * (Math.PI / 180),
         Ω: 0,
@@ -218,7 +224,7 @@ export const earthMoonSystem: System = {
                     main: moon,
                     orbits: []
                 },
-                a: 0.00256955529 * auScale,
+                a: 0.00256955529,
                 e: 0.0549,
                 i: 5.145 * (Math.PI / 180),
                 Ω: 0,
@@ -226,7 +232,7 @@ export const earthMoonSystem: System = {
                 θ: 0,
             }]
         },
-        a: 1 * auScale,
+        a: 1,
         e: 0.0167,
         i: 0,
         Ω: 0,
@@ -241,3 +247,4 @@ for (let i = 0; i < 100; i++) {
 }
 console.log(systemPairs(systemPairs(earthMoonSystem)[0].orbit.body)[0]);
 console.log(planetaryYear(systemPairs(systemPairs(earthMoonSystem)[0].orbit.body)[0]));
+console.log(planetaryYear(systemPairs(earthMoonSystem)[0]));

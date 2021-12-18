@@ -4,6 +4,9 @@ export function planetDensity(planet) {
 export function planetGravity(planet) {
     return planet.mass / (planet.radius * planet.radius);
 }
+export function starRadius(star) {
+    return (Math.pow((star.mass / 332967.75), 0.74)) * 695508;
+}
 const giant = {
     mass: 594.4858,
     radius: 11.444303
@@ -27,7 +30,7 @@ const b = {
     mass: 263859.877
 };
 const sun = {
-    mass: 333030
+    mass: 332967.75
 };
 const ab = {
     starA: a,
@@ -63,7 +66,7 @@ export function meanAnomaly(input, epoch) {
     return (epoch / planetaryYear(input)) * 360;
 }
 export function planetaryYear(input) {
-    return Math.sqrt(Math.pow(input.orbit.a, 3) / (mass(input.main)));
+    return Math.sqrt((Math.pow(input.orbit.a, 3)) / ((mass(input.main) / 332967.75)));
 }
 // sqrt(0.00256955529 ** 3 / (1 / x)) = 0.07480519764
 // 0.00256955529 ** 3 / (1 / x) = 0.07480519764 ** 2
@@ -104,7 +107,9 @@ export function orbitCoordinates(inp, epoch) {
         return [[x, y, z], ...satellites];
     }).flat();
 }
-export let auScale = 40;
+export function kmToAU(km) {
+    return km / 149700598.8024;
+}
 export const system = {
     main: ab,
     orbits: [{
@@ -115,7 +120,7 @@ export const system = {
                             main: nine,
                             orbits: []
                         },
-                        a: 0.00826651492403 * auScale,
+                        a: 0.00826651492403,
                         e: 0.00074,
                         i: 33.7 * (Math.PI / 180),
                         Ω: 0,
@@ -123,7 +128,7 @@ export const system = {
                         θ: 0,
                     }]
             },
-            a: 1.1106 * auScale,
+            a: 1.1106,
             e: 0.00021,
             i: 58.23 * (Math.PI / 180),
             Ω: 0,
@@ -141,7 +146,7 @@ export const earthMoonSystem = {
                             main: moon,
                             orbits: []
                         },
-                        a: 0.00256955529 * auScale,
+                        a: 0.00256955529,
                         e: 0.0549,
                         i: 5.145 * (Math.PI / 180),
                         Ω: 0,
@@ -149,7 +154,7 @@ export const earthMoonSystem = {
                         θ: 0,
                     }]
             },
-            a: 1 * auScale,
+            a: 1,
             e: 0.0167,
             i: 0,
             Ω: 0,
@@ -163,3 +168,4 @@ for (let i = 0; i < 100; i++) {
 }
 console.log(systemPairs(systemPairs(earthMoonSystem)[0].orbit.body)[0]);
 console.log(planetaryYear(systemPairs(systemPairs(earthMoonSystem)[0].orbit.body)[0]));
+console.log(planetaryYear(systemPairs(earthMoonSystem)[0]));
