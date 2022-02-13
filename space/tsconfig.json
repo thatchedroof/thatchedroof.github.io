@@ -4,13 +4,14 @@
         "noUnusedLocals": true,
         "noImplicitReturns": true,
         "noImplicitAny": true,
-        "module": "es2015",
+        "module": "commonjs",
         "target": "es2015",
         "lib": ["esnext", "DOM"],
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "typeRoots": ["node_modules/@types/"],
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "declaration": true
     },
     "include": ["node_modules/@types/three/*.d.ts"]
 }

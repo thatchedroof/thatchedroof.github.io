@@ -131,6 +131,12 @@ function init() {
     );
     cameraFolder.open();
 
+    let epochChange = .0003;
+
+    const miscFolder = gui.addFolder('Misc');
+    miscFolder.add(epochChange, 'epochChange', .0003, .0005);
+    miscFolder.open();
+
     let epoch = 0;
     let frames = 0;
 
@@ -140,7 +146,7 @@ function init() {
 
         //mesh.rotation.x += 0.05;
         //mesh.rotation.y += 0.02;
-        epoch += .0003;
+        epoch += epochChange;
         frames += 1;
 
         let orbitCoordinates = space.orbitCoordinates(space.earthMoonSystem, epoch);

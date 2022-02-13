@@ -1,8 +1,10 @@
-import * as THREE from './node_modules/three/build/three.module.js';
-import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
-import { GUI } from 'three/examples/jsm/libs/dat.gui.module';
-import * as CubemapToEquirectangular from './CubeToEquirectangular/CubeToEquirectangular.js';
-import * as space from './space';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const THREE = require("./node_modules/three/build/three.module.js");
+const OrbitControls_js_1 = require("./node_modules/three/examples/jsm/controls/OrbitControls.js");
+const dat_gui_module_1 = require("three/examples/jsm/libs/dat.gui.module");
+const CubemapToEquirectangular = require("./CubeToEquirectangular/CubeToEquirectangular.js");
+const space = require("./space");
 init();
 function init() {
     const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.01, 100000);
@@ -21,7 +23,7 @@ function init() {
     //scene.add(mesh);
     const gridHelper = new THREE.GridHelper(200, 50);
     scene.add(gridHelper);
-    const controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls_js_1.OrbitControls(camera, renderer.domElement);
     //const background = new THREE.TextureLoader().load('space.jpg');
     //scene.background = background;
     const bequi = new THREE.TextureLoader().load('./benequi.png');
@@ -57,7 +59,7 @@ function init() {
     let dotMaterial = new THREE.PointsMaterial({ size: 0.1 });
     let equi = new CubemapToEquirectangular(renderer, false);
     let cubeCamera = new THREE.CubeCamera(0.01, 100000, new THREE.WebGLCubeRenderTarget(window.innerHeight));
-    const gui = new GUI();
+    const gui = new dat_gui_module_1.GUI();
     let camZ = new THREE.Vector3(0, 0, 0);
     const cameraFolder = gui.addFolder('Camera');
     cameraFolder.add(camZ, 'z', 0, 10);
@@ -83,13 +85,17 @@ function init() {
         camera.updateProjectionMatrix();
     });
     cameraFolder.open();
+    let epochChange = .0003;
+    const miscFolder = gui.addFolder('Misc');
+    miscFolder.add(epochChange, 'epochChange', .0003, .0005);
+    miscFolder.open();
     let epoch = 0;
     let frames = 0;
     function animate() {
         requestAnimationFrame(animate);
         //mesh.rotation.x += 0.05;
         //mesh.rotation.y += 0.02;
-        epoch += .0003;
+        epoch += epochChange;
         frames += 1;
         let orbitCoordinates = space.orbitCoordinates(space.earthMoonSystem, epoch);
         let [x, y, z] = orbitCoordinates[0].map((x) => { return x * scalar.s; });

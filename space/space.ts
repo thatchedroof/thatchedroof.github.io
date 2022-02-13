@@ -1,14 +1,14 @@
-declare type Mass = number;
-declare type Radius = number;
-declare type Density = number;
-declare type Gravity = number;
+export type Mass = number;
+export type Radius = number;
+export type Density = number;
+export type Gravity = number;
 
-declare type Length = number;
-declare type Eccentricity = number;
-declare type Angle = number;
-declare type Time = number;
+export type Length = number;
+export type Eccentricity = number;
+export type Angle = number;
+export type Time = number;
 
-declare type Planet = {
+export type Planet = {
     mass: Mass;
     radius: Radius;
 };
@@ -21,47 +21,47 @@ export function planetGravity(planet: Planet): Gravity {
     return planet.mass / (planet.radius * planet.radius);
 }
 
-export function starRadius(star: Star): Gravity {// * 695508
+export function starRadius(star: Star): Radius {// * 695508
     return ((star.mass / 332967.75) ** 0.74) * 695508;
 }
 
-const giant: Planet = {
+export const giant: Planet = {
     mass: 594.4858,
     radius: 11.444303
 };
 
-const nine: Planet = { // NOT REAL
+export const nine: Planet = { // NOT REAL
     mass: 594.4858,
     radius: 11.444303
 };
 
-const earth: Planet = {
+export const earth: Planet = {
     mass: 1,
     radius: 6378.137
 };
 
-const moon: Planet = {
+export const moon: Planet = {
     mass: 0.0123032,
     radius: 1738.1
 };
 
-declare type Star = {
+export type Star = {
     mass: Mass;
 };
 
-const a: Star = {
+export const a: Star = {
     mass: 404698.375
 };
 
-const b: Star = {
+export const b: Star = {
     mass: 263859.877
 };
 
-const sun: Star = {
+export const sun: Star = {
     mass: 332967.75
 };
 
-const ab: BinaryStar = {
+export const ab: BinaryStar = {
     starA: a,
     starB: b,
     a: 0.2731, // Not Real
@@ -72,17 +72,17 @@ const ab: BinaryStar = {
     θ: 0,
 };
 
-declare type BinaryStar = OrbitalElements & {
+export type BinaryStar = OrbitalElements & {
     starA: Star;
     starB: Star;
 };
 
-declare type BinaryPlanet = OrbitalElements & {
+export type BinaryPlanet = OrbitalElements & {
     planetA: Planet;
     planetB: Planet;
 };
 
-declare type OrbitalElements = {
+export type OrbitalElements = {
     a: Length;
     e: Eccentricity;
     i: Angle;
@@ -91,16 +91,16 @@ declare type OrbitalElements = {
     θ: Angle;
 };
 
-declare type Orbit = OrbitalElements & {
+export type Orbit = OrbitalElements & {
     body: System;
 };
 
-declare type System = {
+export type System = {
     main: Star | Planet | BinaryStar | BinaryPlanet;
     orbits: Orbit[];
 };
 
-declare type SystemPair = {
+export type SystemPair = {
     main: Star | Planet | BinaryStar | BinaryPlanet;
     orbit: Orbit;
 };
@@ -115,15 +115,42 @@ export function mass(input: Star | Planet | BinaryStar | BinaryPlanet): Mass {
     if ('planetA' in input) {
         return input.planetA.mass + input.planetB.mass;
     }
+    return 0;
 }
 
 export function trueAnomaly(input: SystemPair, epoch: Time): Angle {
-    let mean = meanAnomaly(input, epoch);
-    let iter = mean * (Math.PI / 180);
+    let mean = meanAnomaly(input, epoch) * (Math.PI / 180);
+    let iter = mean;
     for (var i = 0; i < 100; i++) {
-        iter = mean * (Math.PI / 180) + input.orbit.e * Math.sin(iter);
+        iter = mean + input.orbit.e * Math.sin(iter);
     }
     const out = ((((2 * Math.atan(Math.pow((1 + input.orbit.e) / (1 - input.orbit.e), 1 / 2) * Math.tan(iter / 2))) * (180 / Math.PI)) % 360) + 360) % 360;
+    return out * (Math.PI / 180);
+}
+
+////SUCKS + DOESN'T WORK + BAD
+export function unrestrictedTrueAnomaly(input: SystemPair, epoch: Time): Angle {
+    let mean = meanAnomaly(input, epoch) * (Math.PI / 180);
+    let iter = mean;
+    let iterNext;
+    for (let i = 0; i < 10000; i++) {
+        iterNext = mean + input.orbit.e * Math.sin(iter);
+        if (Math.abs(iterNext - iter) < 1E-14) {
+            break;
+        }
+        iter = iterNext;
+    }
+    //console.log(Math.floor(meanAnomaly(input, epoch) / 360));
+
+    //const out = Math.atan2(Math.pow(1 - input.orbit.e * input.orbit.e, .5) * Math.sin(iter), Math.cos(iter) - input.orbit.e);
+    //const out = Math.atan2(Math.sqrt((1 - input.orbit.e) / (1 + input.orbit.e)) * Math.sin(iter), Math.cos(iter));
+    //const out = 2 * Math.atan2(Math.sqrt(1 + input.orbit.e) * Math.sin(iter / 2), Math.sqrt(1 - input.orbit.e) * Math.cos(iter / 2));
+
+    // const out = 2 * Math.atan(
+    //         Math.pow((1 + input.orbit.e) / (1 - input.orbit.e), 1 / 2) * Math.tan(iter / 2)
+    //     )
+    // return out
+    const out = ((2 * Math.atan(Math.pow((1 + input.orbit.e) / (1 - input.orbit.e), 1 / 2) * Math.tan(iter / 2))) * (180 / Math.PI)) + Math.floor(meanAnomaly(input, epoch) / 360) * 360;
     return out * (Math.PI / 180);
 }
 
@@ -187,6 +214,10 @@ export function kmToAU(km: Radius) {
     return km / 149700598.8024;
 }
 
+export function angularDiameter(origin: [number, number, number], body: [number, number, number], radius: Radius) {
+    return 2 * Math.atan(kmToAU(radius) / Math.sqrt((body[0] - origin[0]) ** 2 + (body[1] - origin[1]) ** 2 + (body[2] - origin[2]) ** 2));
+}
+
 export const system: System = {
     main: ab,
     orbits: [{
@@ -241,10 +272,32 @@ export const earthMoonSystem: System = {
     }]
 };
 
-for (let i = 0; i < 100; i++) {
-    console.log(systemPairs(system).map((input) => { return trueAnomaly(input, i / 100); })[0]);
-    //console.log(systemPairs(system).map((input) => { return orbitDistance(input, i / 100); })[0]);
-}
-console.log(systemPairs(systemPairs(earthMoonSystem)[0].orbit.body)[0]);
-console.log(planetaryYear(systemPairs(systemPairs(earthMoonSystem)[0].orbit.body)[0]));
-console.log(planetaryYear(systemPairs(earthMoonSystem)[0]));
+// 0.38709927 0.20563593
+// 7.00497902
+// 252.25032350 77.45779628 48.33076593
+export const solarSystem: System = {
+    main: sun,
+    orbits: [{
+        body: {
+            main: earth,
+            orbits: [{
+                body: {
+                    main: moon,
+                    orbits: []
+                },
+                a: 0.00256955529,
+                e: 0.0549,
+                i: 5.145 * (Math.PI / 180),
+                Ω: 0,
+                ω: 0,
+                θ: 0,
+            }]
+        },
+        a: 1,
+        e: 0.0167,
+        i: 0,
+        Ω: 100.46457166 * (Math.PI / 180),
+        ω: 102.93768193 * (Math.PI / 180),
+        θ: 0,
+    }]
+};
