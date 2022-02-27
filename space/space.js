@@ -1,43 +1,107 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.solarSystem = exports.earthMoonSystem = exports.system = exports.angularDiameter = exports.kmToAU = exports.orbitCoordinates = exports.systemPairs = exports.orbitDistance = exports.planetaryYear = exports.meanAnomaly = exports.unrestrictedTrueAnomaly = exports.trueAnomaly = exports.mass = exports.ab = exports.sun = exports.b = exports.a = exports.moon = exports.earth = exports.nine = exports.giant = exports.starRadius = exports.planetGravity = exports.planetDensity = void 0;
-function planetDensity(planet) {
-    return planet.mass / (planet.radius * planet.radius * planet.radius);
-}
-exports.planetDensity = planetDensity;
-function planetGravity(planet) {
-    return planet.mass / (planet.radius * planet.radius);
-}
-exports.planetGravity = planetGravity;
-function starRadius(star) {
-    return (Math.pow((star.mass / 332967.75), 0.74)) * 695508;
-}
-exports.starRadius = starRadius;
-exports.giant = {
-    mass: 594.4858,
-    radius: 11.444303
+exports.solarSystem = exports.earthMoonSystem = exports.system = exports.angularDiameter = exports.kmToAU = exports.orbitCoordinates = exports.systemPairs = exports.orbitDistance = exports.planetaryYear = exports.meanAnomaly = exports.unrestrictedTrueAnomaly = exports.trueAnomaly = exports.mass = exports.ab = exports.System = exports.Orbit = exports.sun = exports.b = exports.a = exports.moon = exports.earth = exports.nine = exports.giant = exports.Star = exports.astronomicalUnits = exports.solarMasses = exports.earthMasses = exports.Planet = void 0;
+const safe_units_1 = require("safe-units");
+const u = require("safe-units"); // REMEMBER TO COMMENT OUT WHEN DONE
+/**
+ * Constructor for IPlanet
+ *
+ * @param {string} name Planet's name
+ * @param {Mass} mass Planetary mass
+ * @param {Length} radius Planetary radius
+ * @returns {IPlanet} IPlanet
+ */
+exports.Planet = (name, mass, radius) => {
+    return {
+        name: () => name,
+        mass: () => mass,
+        radius: () => radius,
+        density: () => mass.over(radius.cubed()),
+    };
 };
-exports.nine = {
-    mass: 594.4858,
-    radius: 11.444303
+exports.earthMasses = safe_units_1.Measure.of(5.9722e+24, safe_units_1.kilograms, 'M🜨');
+exports.solarMasses = safe_units_1.Measure.of(332967.75, exports.earthMasses, 'M☉');
+exports.astronomicalUnits = safe_units_1.Measure.of(149597870691, safe_units_1.meters, 'AU');
+/**
+ * Constructor for IStar
+ *
+ * @param {string} name Star's name
+ * @param {Mass} mass Stellar mass
+ * @returns {IStar} IStar
+ */
+exports.Star = (name, mass) => {
+    return {
+        name: () => name,
+        mass: () => mass,
+        radius: () => safe_units_1.Measure.of((Math.pow(Number(mass.in(exports.solarMasses).slice(0, -2)), 0.74)) * 695508, safe_units_1.kilo(safe_units_1.meters))
+        //density: () => m.over(r.cubed()),
+    };
 };
-exports.earth = {
-    mass: 1,
-    radius: 6378.137
+// export function starRadius(star: Star): Radius {// * 695508
+//     return ((star.mass / 332967.75) ** 0.74) * 695508;
+// }
+exports.giant = exports.Planet('giant', safe_units_1.Measure.of(594.4858, exports.earthMasses), safe_units_1.Measure.of(11.444303, safe_units_1.kilo(safe_units_1.meters))); // Kilometers are broken?
+exports.nine = exports.Planet('nine', safe_units_1.Measure.of(594.4858, exports.earthMasses), safe_units_1.Measure.of(11.444303, safe_units_1.kilo(safe_units_1.meters))); // NOT REAL
+exports.earth = exports.Planet('earth', safe_units_1.Measure.of(1, exports.earthMasses), safe_units_1.Measure.of(6371.000, safe_units_1.kilo(safe_units_1.meters)));
+exports.moon = exports.Planet('moon', safe_units_1.Measure.of(0.0123032, exports.earthMasses), safe_units_1.Measure.of(1738.1, safe_units_1.kilo(safe_units_1.meters)));
+exports.a = exports.Star('a', safe_units_1.Measure.of(404698.375, exports.earthMasses));
+exports.b = exports.Star('b', safe_units_1.Measure.of(263859.877, exports.earthMasses));
+exports.sun = exports.Star('sun', safe_units_1.Measure.of(332967.75, exports.earthMasses));
+exports.Orbit = (main, orbit, a, e, i, Ω, ω, θ) => {
+    return {
+        main: () => main,
+        orbit: () => orbit,
+        a: () => a,
+        e: () => e,
+        i: () => i,
+        Ω: () => Ω,
+        ω: () => ω,
+        θ: () => θ,
+        orbitalPeriod: () => safe_units_1.Measure.sqrt(a.cubed().div(main.mass().plus(orbit.mass())
+            .times(safe_units_1.Measure.of(6.6743015e-11, safe_units_1.meters.cubed()
+            .times(safe_units_1.kilograms.inverse())
+            .times(safe_units_1.seconds.squared().inverse()))))).scale(2 * Math.PI),
+        orbitalElements: () => {
+            return {
+                a: () => a,
+                e: () => e,
+                i: () => i,
+                Ω: () => Ω,
+                ω: () => ω,
+                θ: () => θ,
+            };
+        }
+    };
 };
-exports.moon = {
-    mass: 0.0123032,
-    radius: 1738.1
+exports.System = (root, orbits, orbitFramework) => {
+    /**
+     * Orbits which will be returning from orbits function
+     */
+    let outOrbits = [];
+    for (const bodyName in orbitFramework) {
+        const bodyMatch = orbits.filter((o) => o[0].name() === bodyName);
+        if (bodyMatch.length !== 1)
+            throw new Error('Multiple/no matches to body name');
+        const body = bodyMatch[0];
+        if (Object.keys(orbitFramework[bodyName]).length === 0) {
+            outOrbits.push();
+        }
+    }
+    return {
+        body: () => root,
+        orbits: () => outOrbits
+    };
 };
-exports.a = {
-    mass: 404698.375
-};
-exports.b = {
-    mass: 263859.877
-};
-exports.sun = {
-    mass: 332967.75
-};
+//console.log(sun.radius().in(kilo(meters)));
+const testOrbit = exports.Orbit(exports.sun, exports.earth, safe_units_1.Measure.of(1, exports.astronomicalUnits), safe_units_1.Measure.dimensionless(0.0167), safe_units_1.Measure.of(0, safe_units_1.degrees), safe_units_1.Measure.of(100.46457166, safe_units_1.degrees), safe_units_1.Measure.of(102.93768193, safe_units_1.degrees), safe_units_1.Measure.of(0, safe_units_1.degrees));
+console.log(testOrbit.orbitalPeriod().in(u.days));
+const testSystem = exports.System(exports.sun, [[exports.earth, testOrbit.orbitalElements()]], {
+    "sun": [
+        {
+            "earth": ["moon"]
+        }
+    ]
+});
 exports.ab = {
     starA: exports.a,
     starB: exports.b,

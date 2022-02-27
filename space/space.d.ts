@@ -1,66 +1,56 @@
-export declare type Mass = number;
-export declare type Radius = number;
-export declare type Density = number;
-export declare type Gravity = number;
-export declare type Length = number;
-export declare type Eccentricity = number;
-export declare type Angle = number;
-export declare type Time = number;
-export declare type Planet = {
-    mass: Mass;
-    radius: Radius;
+import { Length, Time, Mass, VolumeDensity, Dimensionless, PlaneAngle } from "safe-units";
+import * as u from "safe-units";
+export declare type IPlanet = {
+    name: () => string;
+    mass: () => Mass;
+    radius: () => Length;
+    density: () => VolumeDensity;
 };
-export declare function planetDensity(planet: Planet): Density;
-export declare function planetGravity(planet: Planet): Gravity;
-export declare function starRadius(star: Star): Radius;
-export declare const giant: Planet;
-export declare const nine: Planet;
-export declare const earth: Planet;
-export declare const moon: Planet;
-export declare type Star = {
-    mass: Mass;
+export declare const Planet: (n: string, m: u.GenericMeasure<number, {
+    mass: "1";
+}>, r: u.GenericMeasure<number, {
+    length: "1";
+}>) => IPlanet;
+export declare const earthMasses: any;
+export declare const solarMasses: any;
+export declare const astronomicalUnits: any;
+export declare type IStar = {
+    name: () => string;
+    mass: () => Mass;
+    radius: () => Length;
 };
-export declare const a: Star;
-export declare const b: Star;
-export declare const sun: Star;
-export declare const ab: BinaryStar;
-export declare type BinaryStar = OrbitalElements & {
-    starA: Star;
-    starB: Star;
+export declare const Star: (n: string, m: u.GenericMeasure<number, {
+    mass: "1";
+}>) => IStar;
+export declare const giant: IPlanet;
+export declare const nine: IPlanet;
+export declare const earth: IPlanet;
+export declare const moon: IPlanet;
+export declare const a: IStar;
+export declare const b: IStar;
+export declare const sun: IStar;
+export declare type IOrbitalElements = {
+    a: () => Length;
+    e: () => Dimensionless;
+    i: () => PlaneAngle;
+    Ω: () => PlaneAngle;
+    ω: () => PlaneAngle;
+    θ: () => PlaneAngle;
 };
-export declare type BinaryPlanet = OrbitalElements & {
-    planetA: Planet;
-    planetB: Planet;
+export declare type IOrbit = IOrbitalElements & {
+    main: () => IPlanet | IStar;
+    orbit: () => IPlanet | IStar;
+    orbitalPeriod: () => Time;
+    orbitalElements: () => IOrbitalElements;
 };
-export declare type OrbitalElements = {
-    a: Length;
-    e: Eccentricity;
-    i: Angle;
-    Ω: Angle;
-    ω: Angle;
-    θ: Angle;
-};
-export declare type Orbit = OrbitalElements & {
-    body: System;
-};
-export declare type System = {
-    main: Star | Planet | BinaryStar | BinaryPlanet;
-    orbits: Orbit[];
-};
-export declare type SystemPair = {
-    main: Star | Planet | BinaryStar | BinaryPlanet;
-    orbit: Orbit;
-};
-export declare function mass(input: Star | Planet | BinaryStar | BinaryPlanet): Mass;
-export declare function trueAnomaly(input: SystemPair, epoch: Time): Angle;
-export declare function unrestrictedTrueAnomaly(input: SystemPair, epoch: Time): Angle;
-export declare function meanAnomaly(input: SystemPair, epoch: Time): Angle;
-export declare function planetaryYear(input: SystemPair): Time;
-export declare function orbitDistance(input: SystemPair, epoch: Time): Angle;
-export declare function systemPairs(input: System): SystemPair[];
-export declare function orbitCoordinates(inp: System, epoch: Time): [number, number, number][];
-export declare function kmToAU(km: Radius): number;
-export declare function angularDiameter(origin: [number, number, number], body: [number, number, number], radius: Radius): number;
-export declare const system: System;
-export declare const earthMoonSystem: System;
-export declare const solarSystem: System;
+export declare const Orbit: (main: IPlanet | IStar, orbit: IPlanet | IStar, a: u.GenericMeasure<number, {
+    length: "1";
+}>, e: u.GenericMeasure<number, {}>, i: u.GenericMeasure<number, {
+    planeAngle: "1";
+}>, Ω: u.GenericMeasure<number, {
+    planeAngle: "1";
+}>, ω: u.GenericMeasure<number, {
+    planeAngle: "1";
+}>, θ: u.GenericMeasure<number, {
+    planeAngle: "1";
+}>) => IOrbit;

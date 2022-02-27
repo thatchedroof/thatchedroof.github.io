@@ -1,65 +1,252 @@
-export type Mass = number;
-export type Radius = number;
-export type Density = number;
-export type Gravity = number;
+import { Measure, Length, Time, Mass, VolumeDensity, Dimensionless, PlaneAngle, kilograms, meters, kilo, seconds, degrees } from "safe-units";
 
-export type Length = number;
-export type Eccentricity = number;
-export type Angle = number;
-export type Time = number;
+import * as u from "safe-units"; // REMEMBER TO COMMENT OUT WHEN DONE
 
-export type Planet = {
-    mass: Mass;
-    radius: Radius;
+/**
+ * A planet with a name, mass, radius, and density
+ */
+export type IPlanet = {
+    /**
+     * Function returning planet's name
+     *
+     * @returns {string} string
+     */
+    name: () => string;
+    /**
+     * Function returning planet's mass
+     *
+     * @returns {Mass} Mass
+     */
+    mass: () => Mass;
+    /**
+     * Function returning planet's radius
+     *
+     * @returns {Length} Length
+     */
+    radius: () => Length;
+    /**
+     * Function returning planet's density
+     *
+     * @returns {VolumeDensity} VolumeDensity
+     */
+    density: () => VolumeDensity;
 };
 
-export function planetDensity(planet: Planet): Density {
-    return planet.mass / (planet.radius * planet.radius * planet.radius);
-}
-
-export function planetGravity(planet: Planet): Gravity {
-    return planet.mass / (planet.radius * planet.radius);
-}
-
-export function starRadius(star: Star): Radius {// * 695508
-    return ((star.mass / 332967.75) ** 0.74) * 695508;
-}
-
-export const giant: Planet = {
-    mass: 594.4858,
-    radius: 11.444303
+/**
+ * Constructor for IPlanet
+ *
+ * @param {string} name Planet's name
+ * @param {Mass} mass Planetary mass
+ * @param {Length} radius Planetary radius
+ * @returns {IPlanet} IPlanet
+ */
+export const Planet = (name: string, mass: Mass, radius: Length): IPlanet => {
+    return {
+        name: () => name,
+        mass: () => mass,
+        radius: () => radius,
+        density: () => mass.over(radius.cubed()),
+    };
 };
 
-export const nine: Planet = { // NOT REAL
-    mass: 594.4858,
-    radius: 11.444303
+export const earthMasses = Measure.of(5.9722e+24, kilograms, 'M🜨');
+
+export const solarMasses = Measure.of(332967.75, earthMasses, 'M☉');
+
+export const astronomicalUnits = Measure.of(149597870691, meters, 'AU');
+
+/**
+ * A star with a name, mass, radius, and density
+ */
+export type IStar = {
+    /**
+     * Function returning star's name
+     *
+     * @returns {string} string
+     */
+    name: () => string;
+    /**
+     * Function returning star's mass
+     *
+     * @returns {Mass} Mass
+     */
+    mass: () => Mass;
+    /**
+     * Function returning star's radius
+     *
+     * @returns {Length} Length
+     */
+    radius: () => Length;
+    //density: () => VolumeDensity;
 };
 
-export const earth: Planet = {
-    mass: 1,
-    radius: 6378.137
+/**
+ * Constructor for IStar
+ *
+ * @param {string} name Star's name
+ * @param {Mass} mass Stellar mass
+ * @returns {IStar} IStar
+ */
+export const Star = (name: string, mass: Mass): IStar => {
+    return {
+        name: () => name,
+        mass: () => mass,
+        radius: () => Measure.of((Number(mass.in(solarMasses).slice(0, -2)) ** 0.74) * 695508, kilo(meters))
+        //density: () => m.over(r.cubed()),
+    };
 };
 
-export const moon: Planet = {
-    mass: 0.0123032,
-    radius: 1738.1
+// export function starRadius(star: Star): Radius {// * 695508
+//     return ((star.mass / 332967.75) ** 0.74) * 695508;
+// }
+
+export const giant = Planet('giant', Measure.of(594.4858, earthMasses), Measure.of(11.444303, kilo(meters))); // Kilometers are broken?
+
+export const nine = Planet('nine', Measure.of(594.4858, earthMasses), Measure.of(11.444303, kilo(meters))); // NOT REAL
+
+export const earth = Planet('earth', Measure.of(1, earthMasses), Measure.of(6371.000, kilo(meters)));
+
+export const moon = Planet('moon', Measure.of(0.0123032, earthMasses), Measure.of(1738.1, kilo(meters)));
+
+export const a = Star('a', Measure.of(404698.375, earthMasses));
+
+export const b = Star('b', Measure.of(263859.877, earthMasses));
+
+export const sun = Star('sun', Measure.of(332967.75, earthMasses));
+
+/**
+ * Kepler's orbital elements
+ */
+export type IOrbitalElements = {
+    /**
+     * Semi-major axis
+     */
+    a: () => Length,
+    /**
+     * Orbital eccentricity
+     */
+    e: () => Dimensionless,
+    i: () => PlaneAngle, // CONTINUE
+    Ω: () => PlaneAngle,
+    ω: () => PlaneAngle,
+    θ: () => PlaneAngle,
 };
 
-export type Star = {
-    mass: Mass;
+export type IOrbit = IOrbitalElements & {
+    main: () => IPlanet | IStar,
+    orbit: () => IPlanet | IStar,
+    orbitalPeriod: () => Time,
+    orbitalElements: () => IOrbitalElements,
 };
 
-export const a: Star = {
-    mass: 404698.375
+export const Orbit = (
+    main: IPlanet | IStar,
+    orbit: IPlanet | IStar,
+    a: Length,
+    e: Dimensionless,
+    i: PlaneAngle,
+    Ω: PlaneAngle,
+    ω: PlaneAngle,
+    θ: PlaneAngle,
+): IOrbit => {
+    return {
+        main: () => main,
+        orbit: () => orbit,
+        a: () => a,
+        e: () => e,
+        i: () => i,
+        Ω: () => Ω,
+        ω: () => ω,
+        θ: () => θ,
+        orbitalPeriod: () => Measure.sqrt(
+            a.cubed().div(
+                main.mass().plus(orbit.mass())
+                    .times(
+                        Measure.of(6.6743015e-11,
+                            meters.cubed()
+                                .times(kilograms.inverse())
+                                .times(seconds.squared().inverse())
+                        )
+                    )
+            )
+        ).scale(2 * Math.PI),
+        orbitalElements: () => {
+            return {
+                a: () => a,
+                e: () => e,
+                i: () => i,
+                Ω: () => Ω,
+                ω: () => ω,
+                θ: () => θ,
+            };
+        }
+    };
 };
 
-export const b: Star = {
-    mass: 263859.877
+export type ISystem = {
+    body: () => IPlanet | IStar;
+    orbits: () => (IOrbitalElements & ISystem)[];
 };
 
-export const sun: Star = {
-    mass: 332967.75
+type OrbitFramework = {
+    [index: string]: (OrbitFramework | string)[];
 };
+
+export const System = (
+    root: IPlanet | IStar,
+    orbits: [IPlanet | IStar, IOrbitalElements][],
+    orbitFramework: OrbitFramework
+): ISystem => {
+    /**
+     * Orbits which will be returning from orbits function
+     */
+    let outOrbits: (IOrbitalElements & ISystem)[] = [];
+
+    for (const bodyName in orbitFramework) {
+
+        const bodyMatch = orbits.filter((o) => o[0].name() === bodyName);
+
+        if (bodyMatch.length !== 1)
+            throw new Error('Multiple/no matches to body name');
+
+        const body = bodyMatch[0];
+
+        if (Object.keys(orbitFramework[bodyName]).length === 0) {
+            outOrbits.push();
+        }
+    }
+
+    return {
+        body: () => root,
+        orbits: () => outOrbits
+    };
+};
+
+//console.log(sun.radius().in(kilo(meters)));
+
+const testOrbit = Orbit(
+    sun, earth,
+    Measure.of(1, astronomicalUnits),
+    Measure.dimensionless(0.0167),
+    Measure.of(0, degrees),
+    Measure.of(100.46457166, degrees),
+    Measure.of(102.93768193, degrees),
+    Measure.of(0, degrees)
+);
+
+console.log(testOrbit.orbitalPeriod().in(u.days));
+
+const testSystem = System(
+    sun,
+    [[earth, testOrbit.orbitalElements()]],
+    {
+        "sun": [
+            {
+                "earth": ["moon"]
+            }
+        ]
+    }
+);
 
 export const ab: BinaryStar = {
     starA: a,
