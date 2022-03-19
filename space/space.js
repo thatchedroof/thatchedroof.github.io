@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.solarSystem = exports.earthMoonSystem = exports.system = exports.angularDiameter = exports.kmToAU = exports.orbitCoordinates = exports.systemPairs = exports.orbitDistance = exports.planetaryYear = exports.meanAnomaly = exports.unrestrictedTrueAnomaly = exports.trueAnomaly = exports.mass = exports.ab = exports.System = exports.Orbit = exports.sun = exports.b = exports.a = exports.moon = exports.earth = exports.nine = exports.giant = exports.Star = exports.astronomicalUnits = exports.solarMasses = exports.earthMasses = exports.Planet = void 0;
+exports.solarSystem = exports.earthMoonSystem = exports.ssystem = exports.angularDiameter = exports.kmToAU = exports.orbitCoordinates = exports.systemPairs = exports.orbitDistance = exports.planetaryYear = exports.meanAnomaly = exports.unrestrictedTrueAnomaly = exports.trueAnomaly = exports.mass = exports.ab = exports.System = exports.testOrbit = exports.Orbit = exports.sun = exports.b = exports.a = exports.moon = exports.earth = exports.nine = exports.giant = exports.Star = exports.astronomicalUnits = exports.solarMasses = exports.earthMasses = exports.Planet = void 0;
 const safe_units_1 = require("safe-units");
-const u = require("safe-units"); // REMEMBER TO COMMENT OUT WHEN DONE
 /**
  * Constructor for IPlanet
  *
@@ -50,7 +49,7 @@ exports.sun = exports.Star('sun', safe_units_1.Measure.of(332967.75, exports.ear
 exports.Orbit = (main, orbit, a, e, i, Ω, ω, θ) => {
     return {
         main: () => main,
-        orbit: () => orbit,
+        satellite: () => orbit,
         a: () => a,
         e: () => e,
         i: () => i,
@@ -73,35 +72,61 @@ exports.Orbit = (main, orbit, a, e, i, Ω, ω, θ) => {
         }
     };
 };
-exports.System = (root, orbits, orbitFramework) => {
-    /**
-     * Orbits which will be returning from orbits function
-     */
-    let outOrbits = [];
-    for (const bodyName in orbitFramework) {
-        const bodyMatch = orbits.filter((o) => o[0].name() === bodyName);
-        if (bodyMatch.length !== 1)
-            throw new Error('Multiple/no matches to body name');
-        const body = bodyMatch[0];
-        if (Object.keys(orbitFramework[bodyName]).length === 0) {
-            outOrbits.push();
+exports.testOrbit = exports.Orbit(exports.sun, exports.earth, safe_units_1.Measure.of(1, exports.astronomicalUnits), safe_units_1.Measure.dimensionless(0.0167), safe_units_1.Measure.of(0, safe_units_1.degrees), safe_units_1.Measure.of(100.46457166, safe_units_1.degrees), safe_units_1.Measure.of(102.93768193, safe_units_1.degrees), safe_units_1.Measure.of(0, safe_units_1.degrees));
+exports.System = (orbits, inputSystem) => {
+    if (orbits.length === 0) {
+        return inputSystem;
+    }
+    if (inputSystem === undefined) {
+        return exports.System(orbits.slice(1), {
+            center: () => orbits[0].main(),
+            orbits: () => [
+                Object.assign({ center: () => orbits[0].satellite(), orbits: () => [] }, orbits[0].orbitalElements())
+            ]
+        });
+    }
+    const orbit = orbits[0];
+    if (inputSystem.center().name() === orbit.satellite().name()) {
+        return exports.System(orbits.slice(1), {
+            center: orbit.satellite,
+            orbits: () => [Object.assign(Object.assign({}, orbit.orbitalElements()), inputSystem)]
+        });
+    }
+    let body = orbit.main();
+    let queue = [];
+    while (true) {
+        if (inputSystem.center().name() === body.name()) {
+            return exports.System(orbits.slice(1), {
+                center: inputSystem.center,
+                orbits: () => inputSystem.orbits().concat(Object.assign({}, orbitToSystemOrbit(orbit)))
+            });
         }
     }
-    return {
-        body: () => root,
-        orbits: () => outOrbits
-    };
+};
+const orbitToSystemOrbit = (orbit) => {
+    return Object.assign({ center: orbit.satellite, orbits: () => [] }, orbit.orbitalElements());
+};
+const searchForOrbit = () => {
+    if (inputSystem.body().name() === orbit.main().name()) {
+        return exports.System(orbits.slice(1), {
+            center: inputSystem.center,
+            orbits: () => inputSystem.orbits().concat(Object.assign({}, orbitToSystemOrbit(orbit)))
+        });
+    }
 };
 //console.log(sun.radius().in(kilo(meters)));
-const testOrbit = exports.Orbit(exports.sun, exports.earth, safe_units_1.Measure.of(1, exports.astronomicalUnits), safe_units_1.Measure.dimensionless(0.0167), safe_units_1.Measure.of(0, safe_units_1.degrees), safe_units_1.Measure.of(100.46457166, safe_units_1.degrees), safe_units_1.Measure.of(102.93768193, safe_units_1.degrees), safe_units_1.Measure.of(0, safe_units_1.degrees));
-console.log(testOrbit.orbitalPeriod().in(u.days));
-const testSystem = exports.System(exports.sun, [[exports.earth, testOrbit.orbitalElements()]], {
-    "sun": [
-        {
-            "earth": ["moon"]
-        }
-    ]
-});
+//console.log(testOrbit.orbitalPeriod().in(u.days));
+// const testSystem = System(
+//     sun,
+//     [[earth, testOrbit.orbitalElements()]],
+//     {
+//         "sun": [
+//             {
+//                 "earth": ["moon"]
+//             }
+//         ]
+//     }
+// );
 exports.ab = {
     starA: exports.a,
     starB: exports.b,
@@ -217,7 +242,7 @@ function angularDiameter(origin, body, radius) {
     return 2 * Math.atan(kmToAU(radius) / Math.sqrt(Math.pow((body[0] - origin[0]), 2) + Math.pow((body[1] - origin[1]), 2) + Math.pow((body[2] - origin[2]), 2)));
 }
 exports.angularDiameter = angularDiameter;
-exports.system = {
+exports.ssystem = {
     main: exports.ab,
     orbits: [{
             body: {

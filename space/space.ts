@@ -134,7 +134,7 @@ export type IOrbitalElements = {
 
 export type IOrbit = IOrbitalElements & {
     main: () => IPlanet | IStar,
-    orbit: () => IPlanet | IStar,
+    satellite: () => IPlanet | IStar,
     orbitalPeriod: () => Time,
     orbitalElements: () => IOrbitalElements,
 };
@@ -151,7 +151,7 @@ export const Orbit = (
 ): IOrbit => {
     return {
         main: () => main,
-        orbit: () => orbit,
+        satellite: () => orbit,
         a: () => a,
         e: () => e,
         i: () => i,
@@ -183,48 +183,7 @@ export const Orbit = (
     };
 };
 
-export type ISystem = {
-    body: () => IPlanet | IStar;
-    orbits: () => (IOrbitalElements & ISystem)[];
-};
-
-type OrbitFramework = {
-    [index: string]: (OrbitFramework | string)[];
-};
-
-export const System = (
-    root: IPlanet | IStar,
-    orbits: [IPlanet | IStar, IOrbitalElements][],
-    orbitFramework: OrbitFramework
-): ISystem => {
-    /**
-     * Orbits which will be returning from orbits function
-     */
-    let outOrbits: (IOrbitalElements & ISystem)[] = [];
-
-    for (const bodyName in orbitFramework) {
-
-        const bodyMatch = orbits.filter((o) => o[0].name() === bodyName);
-
-        if (bodyMatch.length !== 1)
-            throw new Error('Multiple/no matches to body name');
-
-        const body = bodyMatch[0];
-
-        if (Object.keys(orbitFramework[bodyName]).length === 0) {
-            outOrbits.push();
-        }
-    }
-
-    return {
-        body: () => root,
-        orbits: () => outOrbits
-    };
-};
-
-//console.log(sun.radius().in(kilo(meters)));
-
-const testOrbit = Orbit(
+export const testOrbit = Orbit(
     sun, earth,
     Measure.of(1, astronomicalUnits),
     Measure.dimensionless(0.0167),
@@ -234,19 +193,107 @@ const testOrbit = Orbit(
     Measure.of(0, degrees)
 );
 
-console.log(testOrbit.orbitalPeriod().in(u.days));
+export type ISystem = {
+    center: () => IPlanet | IStar;
+    orbits: () => (IOrbitalElements & ISystem)[];
+};
 
-const testSystem = System(
-    sun,
-    [[earth, testOrbit.orbitalElements()]],
-    {
-        "sun": [
-            {
-                "earth": ["moon"]
-            }
-        ]
+export const System = (
+    orbits: IOrbit[],
+    inputSystem?: ISystem
+): ISystem => {
+
+    if (orbits.length === 0) {
+        return inputSystem;
     }
-);
+
+    if (inputSystem === undefined) {
+
+        return System(orbits.slice(1), {
+            center: () => orbits[0].main(),
+            orbits: () => [
+                {
+                    center: () => orbits[0].satellite(),
+                    orbits: () => [],
+                    ...orbits[0].orbitalElements()
+                }
+            ]
+        });
+
+    }
+
+    const orbit = orbits[0];
+
+    if (inputSystem.center().name() === orbit.satellite().name()) {
+
+        return System(orbits.slice(1), {
+            center: orbit.satellite,
+            orbits: () => [{
+                ...orbit.orbitalElements(),
+                ...inputSystem
+            }]
+        });
+
+    }
+
+    let body = orbit.main();
+
+    let queue = [];
+
+    while (true) {
+
+        if (inputSystem.center().name() === body.name()) {
+
+            return System(orbits.slice(1), {
+                center: inputSystem.center,
+                orbits: () => inputSystem.orbits().concat({
+                    ...orbitToSystemOrbit(orbit),
+                })
+            });
+
+        }
+
+    }
+
+};
+
+const orbitToSystemOrbit = (orbit: IOrbit): IOrbitalElements & ISystem => {
+    return {
+        center: orbit.satellite,
+        orbits: () => [],
+        ...orbit.orbitalElements()
+    };
+};
+
+const searchForOrbit = () => {
+
+    if (inputSystem.body().name() === orbit.main().name()) {
+
+        return System(orbits.slice(1), {
+            center: inputSystem.center,
+            orbits: () => inputSystem.orbits().concat({
+                ...orbitToSystemOrbit(orbit),
+            })
+        });
+
+    }
+};
+
+//console.log(sun.radius().in(kilo(meters)));
+
+//console.log(testOrbit.orbitalPeriod().in(u.days));
+
+// const testSystem = System(
+//     sun,
+//     [[earth, testOrbit.orbitalElements()]],
+//     {
+//         "sun": [
+//             {
+//                 "earth": ["moon"]
+//             }
+//         ]
+//     }
+// );
 
 export const ab: BinaryStar = {
     starA: a,
@@ -259,33 +306,10 @@ export const ab: BinaryStar = {
     θ: 0,
 };
 
-export type BinaryStar = OrbitalElements & {
-    starA: Star;
-    starB: Star;
-};
-
-export type BinaryPlanet = OrbitalElements & {
-    planetA: Planet;
-    planetB: Planet;
-};
-
-export type OrbitalElements = {
-    a: Length;
-    e: Eccentricity;
-    i: Angle;
-    Ω: Angle;
-    ω: Angle;
-    θ: Angle;
-};
-
-export type Orbit = OrbitalElements & {
-    body: System;
-};
-
-export type System = {
-    main: Star | Planet | BinaryStar | BinaryPlanet;
-    orbits: Orbit[];
-};
+// export type System = {
+//     main: Star | Planet | BinaryStar | BinaryPlanet;
+//     orbits: Orbit[];
+// };
 
 export type SystemPair = {
     main: Star | Planet | BinaryStar | BinaryPlanet;
@@ -405,7 +429,7 @@ export function angularDiameter(origin: [number, number, number], body: [number,
     return 2 * Math.atan(kmToAU(radius) / Math.sqrt((body[0] - origin[0]) ** 2 + (body[1] - origin[1]) ** 2 + (body[2] - origin[2]) ** 2));
 }
 
-export const system: System = {
+export const ssystem: System = {
     main: ab,
     orbits: [{
         body: {
