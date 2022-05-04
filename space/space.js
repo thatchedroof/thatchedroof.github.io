@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.solarSystem = exports.earthMoonSystem = exports.ssystem = exports.angularDiameter = exports.kmToAU = exports.orbitCoordinates = exports.systemPairs = exports.orbitDistance = exports.planetaryYear = exports.meanAnomaly = exports.unrestrictedTrueAnomaly = exports.trueAnomaly = exports.mass = exports.ab = exports.System = exports.testOrbit = exports.Orbit = exports.sun = exports.b = exports.a = exports.moon = exports.earth = exports.nine = exports.giant = exports.Star = exports.astronomicalUnits = exports.solarMasses = exports.earthMasses = exports.Planet = void 0;
+exports.solarSystem = exports.earthMoonSystem = exports.ssystem = exports.angularDiameter = exports.kmToAU = exports.orbitCoordinates = exports.systemPairs = exports.orbitDistance = exports.planetaryYear = exports.meanAnomaly = exports.unrestrictedTrueAnomaly = exports.trueAnomaly = exports.mass = exports.ab = exports.orbitToSystemOrbit = exports.EasyOrbit = exports.System = exports.testOrbit = exports.Orbit = exports.sun = exports.b = exports.a = exports.moon = exports.earth = exports.nine = exports.giant = exports.BinaryPlanet = exports.BinaryStar = exports.Star = exports.astronomicalUnits = exports.solarMasses = exports.earthMasses = exports.Planet = void 0;
 const safe_units_1 = require("safe-units");
 /**
  * Constructor for IPlanet
@@ -34,6 +34,34 @@ exports.Star = (name, mass) => {
         mass: () => mass,
         radius: () => safe_units_1.Measure.of((Math.pow(Number(mass.in(exports.solarMasses).slice(0, -2)), 0.74)) * 695508, safe_units_1.kilo(safe_units_1.meters))
         //density: () => m.over(r.cubed()),
+    };
+};
+/**
+ * Constructor for IBinaryStar
+ *
+ * @param {IOrbit} orbit Orbit
+ * @returns {IBinaryStar} IBinaryStar
+ */
+exports.BinaryStar = (orbit) => {
+    return {
+        orbit: () => orbit,
+        a: orbit.main,
+        b: orbit.satellite,
+        mass: () => orbit.main().mass().plus(orbit.satellite().mass()),
+    };
+};
+/**
+ * Constructor for IBinaryPlanet
+ *
+ * @param {IOrbit} orbit Orbit
+ * @returns {IBinaryPlanet} IBinaryPlanet
+ */
+exports.BinaryPlanet = (orbit) => {
+    return {
+        orbit: () => orbit,
+        a: orbit.main,
+        b: orbit.satellite,
+        mass: () => orbit.main().mass().plus(orbit.satellite().mass()),
     };
 };
 // export function starRadius(star: Star): Radius {// * 695508
@@ -98,22 +126,27 @@ exports.System = (orbits, inputSystem) => {
         if (inputSystem.center().name() === body.name()) {
             return exports.System(orbits.slice(1), {
                 center: inputSystem.center,
-                orbits: () => inputSystem.orbits().concat(Object.assign({}, orbitToSystemOrbit(orbit)))
+                orbits: () => inputSystem.orbits().concat(Object.assign({}, exports.orbitToSystemOrbit(orbit)))
             });
         }
     }
 };
-const orbitToSystemOrbit = (orbit) => {
+exports.EasyOrbit = (main, orbit, a, e, i, Ω, ω, θ) => {
+    return exports.Orbit(main, orbit, safe_units_1.Measure.of(a, exports.astronomicalUnits), safe_units_1.Measure.dimensionless(e), safe_units_1.Measure.of(i, safe_units_1.degrees), safe_units_1.Measure.of(Ω, safe_units_1.degrees), safe_units_1.Measure.of(ω, safe_units_1.degrees), safe_units_1.Measure.of(θ, safe_units_1.degrees));
+};
+exports.orbitToSystemOrbit = (orbit) => {
     return Object.assign({ center: orbit.satellite, orbits: () => [] }, orbit.orbitalElements());
 };
-const searchForOrbit = () => {
-    if (inputSystem.body().name() === orbit.main().name()) {
-        return exports.System(orbits.slice(1), {
-            center: inputSystem.center,
-            orbits: () => inputSystem.orbits().concat(Object.assign({}, orbitToSystemOrbit(orbit)))
-        });
-    }
-};
+// const searchForOrbit = (inputSystem: ISystem, orbit: IOrbit) => {
+//     if (inputSystem.body().name() === orbit.main().name()) {
+//         return System(orbits.slice(1), {
+//             center: inputSystem.center,
+//             orbits: () => inputSystem.orbits().concat({
+//                 ...orbitToSystemOrbit(orbit),
+//             })
+//         });
+//     }
+// };
 //console.log(sun.radius().in(kilo(meters)));
 //console.log(testOrbit.orbitalPeriod().in(u.days));
 // const testSystem = System(
@@ -126,17 +159,13 @@ const searchForOrbit = () => {
 //             }
 //         ]
 //     }
-// );
-exports.ab = {
-    starA: exports.a,
-    starB: exports.b,
-    a: 0.2731,
-    e: 0.4178,
-    i: 0,
-    Ω: 0,
-    ω: 0,
-    θ: 0,
-};
+// );\
+exports.ab = exports.BinaryStar(exports.EasyOrbit(exports.a, exports.b, 0.2731 /* Not Real */, 0.4178, 0, 0, 0, 0));
+console.log(exports.ab.a().name());
+// export type System = {
+//     main: Star | Planet | BinaryStar | BinaryPlanet;
+//     orbits: Orbit[];
+// };7
 function mass(input) {
     if ('mass' in input) {
         return input.mass;

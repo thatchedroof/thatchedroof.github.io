@@ -2,6 +2,21 @@ import { Measure, Length, Time, Mass, VolumeDensity, Dimensionless, PlaneAngle, 
 
 import * as u from "safe-units"; // REMEMBER TO COMMENT OUT WHEN DONE
 
+export type IBasicBody = {
+    /**
+     * Function returning body's name
+     *
+     * @returns {string} string
+     */
+    name: () => string;
+    /**
+     * Function returning body's mass
+     *
+     * @returns {Mass} Mass
+     */
+    mass: () => Mass;
+};
+
 /**
  * A planet with a name, mass, radius, and density
  */
@@ -96,6 +111,96 @@ export const Star = (name: string, mass: Mass): IStar => {
     };
 };
 
+/**
+ * A binary star system containing star a and b
+ */
+export type IBinaryStar = {
+    /**
+     * Function returning orbit
+     *
+     * @returns {IOrbit<IStar, IStar>} Orbit
+     */
+    orbit: () => IOrbit<IStar, IStar>;
+    /**
+     * Function returning star a
+     *
+     * @returns {IStar} Star a
+     */
+    a: () => IStar;
+    /**
+     * Function returning star b
+     *
+     * @returns {IStar} Star b
+     */
+    b: () => IStar;
+    /**
+     * Function returning system's mass
+     *
+     * @returns {Mass} Mass
+     */
+    mass: () => Mass;
+};
+
+/**
+ * Constructor for IBinaryStar
+ *
+ * @param {IOrbit} orbit Orbit
+ * @returns {IBinaryStar} IBinaryStar
+ */
+export const BinaryStar = (orbit: IOrbit<IStar, IStar>): IBinaryStar => {
+    return {
+        orbit: () => orbit,
+        a: orbit.main,
+        b: orbit.satellite,
+        mass: () => orbit.main().mass().plus(orbit.satellite().mass()),
+    };
+};
+
+/**
+ * A binary planet system containing planet a and b
+ */
+export type IBinaryPlanet = {
+    /**
+     * Function returning orbit
+     *
+     * @returns {IOrbit<IPlanet, IPlanet>} Orbit
+     */
+    orbit: () => IOrbit<IPlanet, IPlanet>;
+    /**
+     * Function returning planet a
+     *
+     * @returns {IPlanet} Planet a
+     */
+    a: () => IPlanet;
+    /**
+     * Function returning planet b
+     *
+     * @returns {IPlanet} Planet b
+     */
+    b: () => IPlanet;
+    /**
+     * Function returning system's mass
+     *
+     * @returns {Mass} Mass
+     */
+    mass: () => Mass;
+};
+
+/**
+ * Constructor for IBinaryPlanet
+ *
+ * @param {IOrbit} orbit Orbit
+ * @returns {IBinaryPlanet} IBinaryPlanet
+ */
+export const BinaryPlanet = (orbit: IOrbit<IPlanet, IPlanet>): IBinaryPlanet => {
+    return {
+        orbit: () => orbit,
+        a: orbit.main,
+        b: orbit.satellite,
+        mass: () => orbit.main().mass().plus(orbit.satellite().mass()),
+    };
+};
+
 // export function starRadius(star: Star): Radius {// * 695508
 //     return ((star.mass / 332967.75) ** 0.74) * 695508;
 // }
@@ -132,23 +237,23 @@ export type IOrbitalElements = {
     θ: () => PlaneAngle,
 };
 
-export type IOrbit = IOrbitalElements & {
-    main: () => IPlanet | IStar,
-    satellite: () => IPlanet | IStar,
+export type IOrbit<A extends IBasicBody, B extends IBasicBody> = IOrbitalElements & {
+    main: () => A,
+    satellite: () => B,
     orbitalPeriod: () => Time,
     orbitalElements: () => IOrbitalElements,
 };
 
-export const Orbit = (
-    main: IPlanet | IStar,
-    orbit: IPlanet | IStar,
+export const Orbit = <A extends IBasicBody, B extends IBasicBody>(
+    main: A,
+    orbit: B,
     a: Length,
     e: Dimensionless,
     i: PlaneAngle,
     Ω: PlaneAngle,
     ω: PlaneAngle,
     θ: PlaneAngle,
-): IOrbit => {
+): IOrbit<A, B> => {
     return {
         main: () => main,
         satellite: () => orbit,
@@ -194,12 +299,12 @@ export const testOrbit = Orbit(
 );
 
 export type ISystem = {
-    center: () => IPlanet | IStar;
+    center: () => IBasicBody;
     orbits: () => (IOrbitalElements & ISystem)[];
 };
 
 export const System = (
-    orbits: IOrbit[],
+    orbits: IOrbit<IBasicBody, IBasicBody>[],
     inputSystem?: ISystem
 ): ISystem => {
 
@@ -257,7 +362,28 @@ export const System = (
 
 };
 
-const orbitToSystemOrbit = (orbit: IOrbit): IOrbitalElements & ISystem => {
+export const EasyOrbit = <A extends IBasicBody, B extends IBasicBody>(
+    main: A,
+    orbit: B,
+    a: number,
+    e: number,
+    i: number,
+    Ω: number,
+    ω: number,
+    θ: number,
+): IOrbit<A, B> => {
+    return Orbit(
+        main, orbit,
+        Measure.of(a, astronomicalUnits),
+        Measure.dimensionless(e),
+        Measure.of(i, degrees),
+        Measure.of(Ω, degrees),
+        Measure.of(ω, degrees),
+        Measure.of(θ, degrees)
+    );
+};
+
+export const orbitToSystemOrbit = (orbit: IOrbit<IBasicBody, IBasicBody>): IOrbitalElements & ISystem => {
     return {
         center: orbit.satellite,
         orbits: () => [],
@@ -265,19 +391,19 @@ const orbitToSystemOrbit = (orbit: IOrbit): IOrbitalElements & ISystem => {
     };
 };
 
-const searchForOrbit = () => {
+// const searchForOrbit = (inputSystem: ISystem, orbit: IOrbit) => {
 
-    if (inputSystem.body().name() === orbit.main().name()) {
+//     if (inputSystem.body().name() === orbit.main().name()) {
 
-        return System(orbits.slice(1), {
-            center: inputSystem.center,
-            orbits: () => inputSystem.orbits().concat({
-                ...orbitToSystemOrbit(orbit),
-            })
-        });
+//         return System(orbits.slice(1), {
+//             center: inputSystem.center,
+//             orbits: () => inputSystem.orbits().concat({
+//                 ...orbitToSystemOrbit(orbit),
+//             })
+//         });
 
-    }
-};
+//     }
+// };
 
 //console.log(sun.radius().in(kilo(meters)));
 
@@ -293,28 +419,18 @@ const searchForOrbit = () => {
 //             }
 //         ]
 //     }
-// );
+// );\
 
-export const ab: BinaryStar = {
-    starA: a,
-    starB: b,
-    a: 0.2731, // Not Real
-    e: 0.4178,
-    i: 0,
-    Ω: 0,
-    ω: 0,
-    θ: 0,
-};
+export const ab: IBinaryStar = BinaryStar(
+    EasyOrbit(a, b, 0.2731 /* Not Real */, 0.4178, 0, 0, 0, 0),
+);
+
+console.log(ab.a().name());
 
 // export type System = {
 //     main: Star | Planet | BinaryStar | BinaryPlanet;
 //     orbits: Orbit[];
-// };
-
-export type SystemPair = {
-    main: Star | Planet | BinaryStar | BinaryPlanet;
-    orbit: Orbit;
-};
+// };7
 
 export function mass(input: Star | Planet | BinaryStar | BinaryPlanet): Mass {
     if ('mass' in input) {
