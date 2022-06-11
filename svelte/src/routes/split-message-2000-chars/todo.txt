@@ -1,0 +1,4 @@
+TODO:
+- Text chunk size changer
+- Break word/Break line/Keep line choice
+- Text chunk size equalizer

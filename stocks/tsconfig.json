@@ -1,6 +1,13 @@
 {
-    "extends": "../funny/tsconfig.json",
-
-    "include": ["src/**/*"],
-    "exclude": ["node_modules/*", "__sapper__/*", "public/*"]
+    "compilerOptions": {
+        "strict": true,
+        "noUnusedLocals": true,
+        "noImplicitReturns": true,
+        "module": "es2022",
+        "target": "es2017",
+        "lib": ["esnext", "DOM"],
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true
+    }
 }

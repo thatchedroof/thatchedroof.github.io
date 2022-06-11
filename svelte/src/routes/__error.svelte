@@ -1,0 +1,37 @@
+<svelte:head>
+	<meta charset="utf-8" />
+	<meta name="twitter:card" content="summary" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="what" />
+	<meta property="og:description" content="uh" />
+	<meta property="og:url" content="https://thatchedroof.github.io/" />
+	<title>:( thathc roof world</title>
+	<link
+		rel="icon"
+		type="image/png"
+		href="https://cdn.discordapp.com/avatars/471354140639887400/44c9c22ebd692580a5b8476efb361c04.png"
+	/>
+</svelte:head>
+
+<h1 id="header404">404</h1>
+<h1 id="text404">Can't find your page :(((((</h1>
+
+<style>
+	#header404 {
+		font-family: sans-serif;
+		text-align: center;
+		color: crimson;
+		font-style: italic;
+		font-weight: bold;
+		text-shadow: 2px 2px 2px crimson;
+		font-size: 100px;
+	}
+
+	#text404 {
+		color: rgb(31, 31, 31);
+		font-family: monospace;
+		text-align: center;
+		font-size: 25px;
+		margin-top: 0;
+	}
+</style>

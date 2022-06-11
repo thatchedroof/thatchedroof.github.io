@@ -1,28 +1,28 @@
 function buttonPress(): void {
-    let output = document.getElementById('output')!;
+    const output = document.getElementById('output')!;
 
     output.textContent = '';
 
-    let inp = <HTMLInputElement>document.getElementById('input');
+    const inp = <HTMLInputElement>document.getElementById('input');
 
-    let input = inp.value;
+    const input = inp.value;
 
-    let options = {
+    const options = {
         break: (<HTMLInputElement>document.querySelector('input[name="break"]:checked')).value
     };
 
-    let splitInp = splitText(input, 2000, options);
+    const splitInp = splitText(input, 2000, options);
 
     console.log(splitInp);
 
     for (let i = 0; i < splitInp.length; i++) {
-        let outputItem = document.createElement('div');
+        const outputItem = document.createElement('div');
 
         outputItem.classList.add('output-item');
 
         //
 
-        let outputText = document.createElement('textarea');
+        const outputText = document.createElement('textarea');
 
         //outputText.setAttribute('readonly', 'readonly');
 
@@ -36,7 +36,7 @@ function buttonPress(): void {
 
         //
 
-        let outputClip = document.createElement('button');
+        const outputClip = document.createElement('button');
 
         outputClip.setAttribute('onclick', `selectOutput(${i})`);
 
@@ -44,7 +44,7 @@ function buttonPress(): void {
 
         outputClip.innerText = 'Copy';
 
-        let hue: number = 0;
+        let hue = 0;
 
         if (splitInp.length === 2) {
             if (i === 0) {
@@ -74,7 +74,7 @@ function buttonPress(): void {
             hue = i * (256 / (splitInp.length - 1));
         }
 
-        let color = `hsl(${hue}, 30%, 30%)`;
+        const color = `hsl(${hue}, 30%, 30%)`;
 
         outputClip.style.backgroundColor = color;
 
@@ -91,7 +91,7 @@ function buttonPress(): void {
 }
 
 function selectOutput(i: number) {
-    let outputText = <HTMLInputElement>(
+    const outputText = <HTMLInputElement>(
         document.getElementById(`output-text-${i}`)
     );
 
@@ -101,11 +101,11 @@ function selectOutput(i: number) {
     document.execCommand('copy');
 }
 
-function splitText(input: string, maxLength: number, options: {break: string}): string[] {
-    console.log(options.break)
+function splitText(input: string, maxLength: number, options: { break: string; }): string[] {
+    console.log(options.break);
 
     if (options.break === 'bc') {
-        let out = <string[]>input.match(new RegExp(`(.|[\r\n]){1,${maxLength}}`, 'g'));
+        const out = <string[]>input.match(new RegExp(`(.|[\r\n]){1,${maxLength}}`, 'g'));
         return out;
     }
 
@@ -113,39 +113,39 @@ function splitText(input: string, maxLength: number, options: {break: string}): 
 
     let strings: string[] = [];
 
-    if (options.break === 'bw'){
+    if (options.break === 'bw') {
         strings = <string[]>input.match(/[^\s]+\s?|\s/g);
     } else {
         strings = <string[]>input.match(/[^(\r|\n)]+(\r|\n)?|(\r|\n)/g);
     }
 
-    console.log('strings:', strings)
+    console.log('strings:', strings);
 
-    for (let str of strings) {
-        console.log(out[out.length-1], str)
+    for (const str of strings) {
+        console.log(out[out.length - 1], str);
 
-        if ((out[out.length-1] + str).length <= maxLength) {
-            out[out.length-1] += str
+        if ((out[out.length - 1] + str).length <= maxLength) {
+            out[out.length - 1] += str;
 
         } else if (str.length <= maxLength) {
-            out[out.length-1] = out[out.length-1]
-            out.push(str)
+            out[out.length - 1] = out[out.length - 1];
+            out.push(str);
 
         } else {
-            let outLast = out.pop()!;
+            const outLast = out.pop()!;
 
             let newOptions = options;
 
             if (options.break === 'bw') {
-                newOptions = Object.assign({}, options, {break: "bc"});
+                newOptions = Object.assign({}, options, { break: "bc" });
             } else {
-                newOptions = Object.assign({}, options, {break: "bw"});
+                newOptions = Object.assign({}, options, { break: "bw" });
             }
 
-            out = out.concat(splitText(outLast.concat(str), maxLength, newOptions))
+            out = out.concat(splitText(outLast.concat(str), maxLength, newOptions));
         }
 
-        console.log('out:', out)
+        console.log('out:', out);
     }
 
     return out;

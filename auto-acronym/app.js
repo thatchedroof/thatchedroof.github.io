@@ -1,13 +1,13 @@
 import { corncob } from './corncob.js';
 import { disylls } from './disylls.js';
-let cob = corncob.filter((word) => word.length > 2);
-let usedDisylls = [];
+const cob = corncob.filter((word) => word.length > 2);
+const usedDisylls = [];
 //let usedCorncob: string[] = [];
 //let lastCorncobAdd = 0;
 export function buttonPress(text) {
-    let acronyms = getAcronyms(text, disylls, cob).sort((x, y) => y[1] - x[1]);
+    const acronyms = getAcronyms(text, disylls, cob).sort((x, y) => y[1] - x[1]);
     console.log(acronyms);
-    let acroDiv = document.getElementById('acronyms');
+    const acroDiv = document.getElementById('acronyms');
     acroDiv.innerHTML = ``;
     for (let i = 0; i < acronyms.length; i++) {
         if (acroDiv.offsetHeight > 500) {
@@ -69,15 +69,15 @@ function getUnsortedAcronyms(
 */
 function getAcronyms(inp, disylls, corncob) {
     //split input into sylls
-    let splitInp = String(inp)
+    const splitInp = String(inp)
         .split(' ')
         .map((x) => x.toLowerCase().split(/([aeiouy]+)/));
     //input is now only first syllables
-    let input = splitInp
+    const input = splitInp
         .map((x) => x[0] + x[1] + x[2])
         .map((x) => toTitleCase(x));
     //list of acronyms to return
-    let out = [];
+    const out = [];
     //size of each acronym
     let coord = [];
     //initialize acro coord
@@ -118,17 +118,17 @@ function toTitleCase(inp) {
 }
 function toSylls(inp) {
     //split into sylls
-    let input = inp.toLowerCase().split(/([aeiouy]+)/);
+    const input = inp.toLowerCase().split(/([aeiouy]+)/);
     //add ^ and $ to beginning and end
-    let out = ['^'.concat(input[0])]
+    const out = ['^'.concat(input[0])]
         .concat(input.slice(1, input.length - 1))
         .concat([input[input.length - 1].concat('$')]);
     return out;
 }
 function toDisylls(inp) {
-    let sylls = toSylls(inp);
+    const sylls = toSylls(inp);
     //list of disylls to return
-    let out = [];
+    const out = [];
     //iterate through each disyll and append to out
     for (let i = 0; i < sylls.length - 1; i++) {
         out.push(sylls[i] + sylls[i + 1]);
@@ -136,17 +136,17 @@ function toDisylls(inp) {
     return out;
 }
 function scoreDisylls(inp, disylls) {
-    let inputDisylls = toDisylls(inp);
+    const inputDisylls = toDisylls(inp);
     //let score: number = 1;
     //amount of invalid disylls
     let fails = 1;
     //iterate through disylls
     for (let i = 0; i < inputDisylls.length; i++) {
         //find input disyll in list of used disylls
-        let index = usedDisylls.findIndex((x) => x[0] === inputDisylls[i]);
+        const index = usedDisylls.findIndex((x) => x[0] === inputDisylls[i]);
         //if not in usedDisylls
         if (index === -1) {
-            let index = disylls.findIndex((x) => x[0] === inputDisylls[i]);
+            const index = disylls.findIndex((x) => x[0] === inputDisylls[i]);
             if (index !== -1) {
                 usedDisylls.push(disylls[index]);
                 console.log(disylls[index]);
@@ -168,13 +168,13 @@ function scoreDisylls(inp, disylls) {
     return 1 / fails; //Math.pow(score, 1/inputDisylls.length)
 }
 function scoreCorncob(inp, corncob) {
-    let input = inp.toLowerCase();
+    const input = inp.toLowerCase();
     let score = 0;
     //iterate through every word
     for (let i = 0; i < corncob.length; i++) {
-        let word = corncob[i];
+        const word = corncob[i];
         //find word in input
-        let index = input.search(word);
+        const index = input.search(word);
         //if word is in input
         if (index !== -1) {
             score += word.length / input.length;
@@ -231,7 +231,7 @@ function scoreCorncob(inp, corncob) {
 }
 function totalScore(acro, disylls, corncob) {
     //console.time('di');
-    let di = scoreDisylls(acro, disylls);
+    const di = scoreDisylls(acro, disylls);
     //console.timeEnd('di');
     let co = 0;
     if (di !== 0) {
