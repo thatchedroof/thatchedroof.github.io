@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="twitter:card" content="summary" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="what is this" />
+        <meta property="og:description" content="where am i" />
+        <meta property="og:image" content="" />
+        <meta property="og:url" content="https://thatchedroof.github.io/" />
+        <title>FUNNY thathc roof world</title>
+        <link rel="stylesheet" href="main.css" />
+        <link rel="icon" type="image/png" href="" />
+    </head>
+
+    <body>
+        <h1 id="title">Split text into 2000 characters</h1>
+        <ul>
+            <li>
+                <label for="input">Text to split up</label><br />
+                <textarea
+                    id="input"
+                    name="input"
+                    rows="15"
+                    cols="100"
+                ></textarea>
+            </li>
+            <li>
+                <div id="option-buttons">
+                    <label for="bc" class="option-label bc"
+                        >Break everything</label
+                    >
+                    <input
+                        type="radio"
+                        id="bc"
+                        name="break"
+                        value="bc"
+                        class="option-button bc"
+                        checked
+                    />
+
+                    <label for="bw" class="option-label bw"
+                        >Don't break words</label
+                    >
+                    <input
+                        type="radio"
+                        id="bw"
+                        name="break"
+                        value="bw"
+                        class="option-button bw"
+                    />
+
+                    <label for="bl" class="option-label bl"
+                        >Don't break lines</label
+                    >
+                    <input
+                        type="radio"
+                        id="bl"
+                        name="break"
+                        value="bl"
+                        class="option-button bl"
+                    />
+                </div>
+            </li>
+            <li class="button">
+                <button type="button" onclick="buttonPress()">
+                    Split text
+                </button>
+            </li>
+        </ul>
+        <div id="output">
+            <ul id="items"></ul>
+        </div>
+        <script src="Sortable.js"></script>
+        <script src="app.js"></script>
+        <noscript>ENABLE JAVASCRIPT RIGHT NOW</noscript>
+    </body>
+</html>
