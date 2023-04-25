@@ -1,0 +1,23 @@
+:root {
+    background-color: rgb(255, 255, 208);
+    color: rgb(0, 0, 0);
+}
+
+body {
+    margin: 0;
+    font-size: 100;
+}
+
+.crispy {
+    filter: url(#crispify);
+    font-size: 100;
+}
+
+.offscreen {
+    position: absolute;
+    left: -100000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}

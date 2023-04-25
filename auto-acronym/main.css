@@ -1,0 +1,80 @@
+:root {
+    background-color: rgb(31, 31, 31);
+    color: rgb(222, 227, 245);
+    font-family: monospace;
+}
+
+body {
+    margin: 0;
+}
+
+#title {
+    margin: 0 auto;
+    padding: 1em;
+}
+
+ul {
+    width: 300px;
+    margin: 0 auto;
+    list-style: none;
+    padding: 1em;
+}
+
+li {
+    margin-top: 1em;
+}
+
+input,
+textarea {
+    background-color: rgb(43, 43, 43);
+    color: rgb(222, 227, 245);
+    font-family: inherit;
+    width: 300px;
+    box-sizing: border-box;
+    border: 2px inset rgb(41, 41, 41);
+    padding: .25em;
+    padding-left: .5em;
+    margin-top: .25em;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: rgb(54, 54, 54);
+    border-style: solid;
+    border-radius: 2px;
+}
+
+button {
+    font-family: inherit;
+    font-size: inherit;
+    background-color: rgb(43, 43, 43);
+    color: rgb(222, 227, 245);
+    cursor: pointer;
+}
+
+button:active {
+    background-color: rgb(222, 227, 245);
+    color: rgb(43, 43, 43);
+}
+
+#acronyms {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 30px;
+    gap: 15px 7px;
+}
+
+#acronyms::after {
+    content: "";
+    flex: auto;
+}
+
+abbr {
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 20px;
+    color: rgb(241, 243, 250);
+}

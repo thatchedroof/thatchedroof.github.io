@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "safe-units": "^1.1.0"
+  },
+  "dependencies": {
+    "markdown-table": "^3.0.3"
   }
 }

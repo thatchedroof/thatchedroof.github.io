@@ -3,6 +3,9 @@ import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitC
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module';
 import * as CubemapToEquirectangular from './CubeToEquirectangular/CubeToEquirectangular.js';
 import * as space from './space';
+import { orbitCoordinates } from './space';
+import { Measure, GenericMeasure, UnitWithSymbols, Trig, Length, Time, Mass, VolumeDensity, Dimensionless, PlaneAngle, wrapUnaryFn, kilograms, grams, meters, kilo, centi, days, seconds, degrees } from "safe-units";
+
 
 init();
 
@@ -48,44 +51,42 @@ function init() {
             scene.background = rt.texture;
         });
 
-    const s = space.earthMoonSystem.main as { mass: number; };
-
-    const ear = space.earthMoonSystem.orbits[0].body.main as { mass: number, radius: number; };
-
-    const m = space.earthMoonSystem.orbits[0].body.orbits[0].body.main as { mass: number, radius: number; };
-
     //console.log("funny", space.kmToAU(space.starRadius(space.earthMoonSystem.main as { mass: number; })) * scalar.s);
-    const sun = new THREE.Mesh(
-        new THREE.SphereGeometry(space.kmToAU(space.starRadius(s)) * scalar.s, 32, 32),
-        new THREE.MeshBasicMaterial({
-            map: bequi
-        })
-    );
-    scene.add(sun);
 
-    console.log('ear', ear.radius, space.kmToAU(ear.radius) * scalar.s);
-    console.log('moo', m.radius, space.kmToAU(m.radius) * scalar.s);
+    const addSystemToScene = (system: space.ISystem, scene: THREE.Scene, scalar: number): { [name: string]: THREE.Mesh<THREE.SphereGeometry, THREE.MeshBasicMaterial>; } => {
+        const bodies = system.bodyDictionary();
+        const out = {};
+        for (const [name, body] of Object.entries(bodies)) {
+            if ('radius' in body) {
+                const radius = parseInt(body.radius().in(space.astronomicalUnits).slice(0, -3));
+                const sphere = new THREE.Mesh(
+                    new THREE.SphereGeometry(radius * scalar, 32, 32),
+                    new THREE.MeshBasicMaterial({
+                        map: bequi
+                    })
+                );
+                scene.add(sphere);
+                out[name] = sphere;
+            } else {
+                // TODO: Add binary star/planet
+            }
+        }
+        return out;
+    };
 
-    const planet = new THREE.Mesh(
-        new THREE.SphereGeometry(space.kmToAU(ear.radius) * scalar.s, 32, 32),
-        new THREE.MeshBasicMaterial({
-            map: bequi
-        })
-    );
-    scene.add(planet);
+    const numerifyOrbitCoordinates = (orbitCoordinates: [Length, Length, Length], scalar: number) => {
+        return [
+            parseFloat(orbitCoordinates[0].in(space.astronomicalUnits).slice(0, -3)) * scalar, parseFloat(orbitCoordinates[1].in(space.astronomicalUnits).slice(0, -3)) * scalar, parseFloat(orbitCoordinates[2].in(space.astronomicalUnits).slice(0, -3)) * scalar// - 50
+        ] as [number, number, number];
+    };
 
-    const moon = new THREE.Mesh(
-        new THREE.SphereGeometry(space.kmToAU(m.radius) * scalar.s, 32, 32),
-        new THREE.MeshBasicMaterial({
-            map: bequi
-        })
-    );
-    scene.add(moon);
+    let bodies = addSystemToScene(space.solarSystem, scene, scalar.s);
 
-    const origin = space.orbitCoordinates(space.earthMoonSystem, 0)[0];
-    const setOrigin: [number, number, number] = [
-        origin[0], origin[1], origin[2]// - 50
-    ];
+    const orbitCoordinates = space.solarSystem.orbitCoordinates();
+    console.log(orbitCoordinates);
+    const origin = orbitCoordinates['sun'];
+    console.log(origin);
+    const setOrigin: [number, number, number] = numerifyOrbitCoordinates(origin, scalar.s);
 
     controls.target.set(
         ...setOrigin
@@ -102,23 +103,23 @@ function init() {
 
     const cameraFolder = gui.addFolder('Camera');
     cameraFolder.add(camZ, 'z', 0, 10);
-    cameraFolder.add(scalar, 's', 100, 800).onChange(
-        () => {
-            let escale = space.kmToAU(ear.radius) * scalar.s;
-            planet.scale.x = escale;
-            planet.scale.y = escale;
-            planet.scale.z = escale;
-            let mscale = space.kmToAU(m.radius) * scalar.s;
-            moon.scale.x = mscale;
-            moon.scale.y = mscale;
-            moon.scale.z = mscale;
-            let sscale = space.kmToAU(space.starRadius(s)) * scalar.s;
-            sun.scale.x = sscale;
-            sun.scale.y = sscale;
-            sun.scale.z = sscale;
-            console.log('yes', escale, mscale, sscale, ear.radius, m.radius, space.starRadius(s));
-        }
-    );
+    // cameraFolder.add(scalar, 's', 100, 800).onChange(
+    //     () => {
+    //         let escale = space.kmToAU(ear.radius) * scalar.s;
+    //         planet.scale.x = escale;
+    //         planet.scale.y = escale;
+    //         planet.scale.z = escale;
+    //         let mscale = space.kmToAU(m.radius) * scalar.s;
+    //         moon.scale.x = mscale;
+    //         moon.scale.y = mscale;
+    //         moon.scale.z = mscale;
+    //         let sscale = space.kmToAU(s.radius()) * scalar.s;
+    //         sun.scale.x = sscale;
+    //         sun.scale.y = sscale;
+    //         sun.scale.z = sscale;
+    //         console.log('yes', escale, mscale, sscale, ear.radius, m.radius, s.radius());
+    //     }
+    // );
     cameraFolder.add(camera, 'zoom', 0, 10).onChange(
         () => {
             camera.updateProjectionMatrix();
@@ -131,13 +132,13 @@ function init() {
     );
     cameraFolder.open();
 
-    let epochChange = .0003;
+    let epochChange = 0.0003;
 
     const miscFolder = gui.addFolder('Misc');
     miscFolder.add(epochChange, 'epochChange', .0003, .0005);
     miscFolder.open();
 
-    let epoch = 0;
+    let epoch = Measure.of(0, days);
     let frames = 0;
 
     function animate() {
@@ -146,28 +147,21 @@ function init() {
 
         //mesh.rotation.x += 0.05;
         //mesh.rotation.y += 0.02;
-        epoch += epochChange;
+        epoch = epoch.plus(Measure.of(epochChange, days));
         frames += 1;
 
-        let orbitCoordinates = space.orbitCoordinates(space.earthMoonSystem, epoch);
+        let orbitCoordinates = space.solarSystem.orbitCoordinates(epoch);
 
-        let [x, y, z] = orbitCoordinates[0].map((x) => { return x * scalar.s; });
-        let [x2, y2, z2] = orbitCoordinates[1].map((x) => { return x * scalar.s; });
-
-        planet.position.x = x;
-        planet.position.y = y;
-        planet.position.z = z;
-        moon.position.x = x2;
-        moon.position.y = y2;
-        moon.position.z = z2;
-
-        scene.add(new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(new THREE.Vector3(x, y, z).toArray(), 3)), dotMaterial));
-
-        scene.add(new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(new THREE.Vector3(x2, y2, z2).toArray(), 3)), dotMaterial));
-
-        camera.position.x = x;
-        camera.position.y = y;
-        camera.position.z = z + camZ.z;
+        for (const [name, body] of Object.entries(bodies)) {
+            let [x, y, z] = numerifyOrbitCoordinates(orbitCoordinates[name], scalar.s);
+            body.position.x = x;
+            body.position.y = y;
+            body.position.z = z;
+            scene.add(new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(new THREE.Vector3(x, y, z).toArray(), 3)), dotMaterial));
+        }
+        // camera.position.x = x;
+        // camera.position.y = y;
+        // camera.position.z = z + camZ.z;
 
         if (frames === 10000) {
             console.log('go');
