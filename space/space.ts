@@ -2,7 +2,7 @@ import { Measure, GenericMeasure, UnitWithSymbols, Trig, Length, Time, Mass, Vol
 
 import * as u from "safe-units"; // REMEMBER TO COMMENT OUT WHEN DONE
 
-//import { markdownTable } from 'markdown-table';
+import { markdownTable } from 'markdown-table';
 
 export type IBasicBody = {
     /**
