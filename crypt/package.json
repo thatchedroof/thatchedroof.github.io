@@ -1,0 +1,17 @@
+{
+  "name": "crypt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "encrypt.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.1.0"
+  },
+  "dependencies": {
+    "js-base64": "^3.7.5"
+  }
+}

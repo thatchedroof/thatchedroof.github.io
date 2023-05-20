@@ -1,0 +1,36 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+//ChatGPT
+import { Base64 } from 'js-base64';
+import * as webcrypto from 'crypto';
+function encryptData(content, secretKey) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(content);
+        console.log(data);
+        const key = yield webcrypto.subtle.importKey('raw', secretKey, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
+        const iv = webcrypto.getRandomValues(new Uint8Array(12));
+        const encryptedData = yield webcrypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, data);
+        return { iv, encryptedData: new Uint8Array(encryptedData) };
+    });
+}
+// Use this to encrypt your content offline
+const secretKey = webcrypto.getRandomValues(new Uint8Array(16));
+console.log(secretKey);
+encryptData('Your website content here', secretKey)
+    .then((encryptedContent) => {
+    console.log(JSON.stringify(encryptedContent));
+    console.log(Base64.fromUint8Array(secretKey, true));
+    console.log(Base64.fromUint8Array(encryptedContent.iv, true));
+    console.log(Base64.fromUint8Array(encryptedContent.encryptedData, true)); // No
+})
+    .catch((error) => {
+    console.error(error);
+});
