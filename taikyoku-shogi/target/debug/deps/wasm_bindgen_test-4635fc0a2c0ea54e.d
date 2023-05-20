@@ -1,0 +1,9 @@
+c:\Users\tnert\OneDrive\Documents\GitHub\thatchedroof.github.io\taikyoku-shogi\target\debug\deps\wasm_bindgen_test-4635fc0a2c0ea54e.rmeta: C:\Users\tnert\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wasm-bindgen-test-0.3.34\src\lib.rs C:\Users\tnert\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wasm-bindgen-test-0.3.34\src\rt\mod.rs C:\Users\tnert\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wasm-bindgen-test-0.3.34\src\rt\browser.rs C:\Users\tnert\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wasm-bindgen-test-0.3.34\src\rt\detect.rs C:\Users\tnert\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wasm-bindgen-test-0.3.34\src\rt\node.rs
+
+c:\Users\tnert\OneDrive\Documents\GitHub\thatchedroof.github.io\taikyoku-shogi\target\debug\deps\wasm_bindgen_test-4635fc0a2c0ea54e.d: C:\Users\tnert\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wasm-bindgen-test-0.3.34\src\lib.rs C:\Users\tnert\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wasm-bindgen-test-0.3.34\src\rt\mod.rs C:\Users\tnert\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wasm-bindgen-test-0.3.34\src\rt\browser.rs C:\Users\tnert\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wasm-bindgen-test-0.3.34\src\rt\detect.rs C:\Users\tnert\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wasm-bindgen-test-0.3.34\src\rt\node.rs
+
+C:\Users\tnert\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wasm-bindgen-test-0.3.34\src\lib.rs:
+C:\Users\tnert\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wasm-bindgen-test-0.3.34\src\rt\mod.rs:
+C:\Users\tnert\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wasm-bindgen-test-0.3.34\src\rt\browser.rs:
+C:\Users\tnert\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wasm-bindgen-test-0.3.34\src\rt\detect.rs:
+C:\Users\tnert\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wasm-bindgen-test-0.3.34\src\rt\node.rs:
