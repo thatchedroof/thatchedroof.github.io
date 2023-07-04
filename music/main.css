@@ -1,0 +1,62 @@
+:root {
+    background-color: rgb(31, 31, 31);
+    color: rgb(222, 227, 245);
+}
+
+body {
+    margin: 0;
+}
+
+#guitar {
+    height: 25vh;
+    width: 100vw;
+    display: flex;
+    /* make flexbox vertical */
+    flex-direction: column;
+    z-index: 1;
+}
+
+.frets {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+}
+
+.fret {
+    background-color: rgb(25, 24, 23);
+    height: 100%;
+    border-left: 2px solid rgb(110, 106, 98);
+    border-right: 2px solid rgb(148, 143, 132);
+    /* x: rgb(200, 198, 192) */
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    color: rgba(222, 227, 245, 0.194);
+    font-size: 100%;
+    font-family: sans-serif;
+    font-weight: bold;
+    overflow: hidden;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* span.squeeze { */
+/* -webkit-transform: scale(0.5, 1); */
+/* -moz-transform: scale(0.5, 1); */
+/* -o-transform: scale(0.5, 1); */
+/* -ms-transform: scale(0.5, 1); */
+/* transform: scale(0.5, 1); */
+/* } */
+
+.fret::after {
+    z-index: 10;
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    border-top: 2px solid rgb(210, 210, 210, 0.194); /* Change back to zero alpha for just color view instead of note names */
+}
