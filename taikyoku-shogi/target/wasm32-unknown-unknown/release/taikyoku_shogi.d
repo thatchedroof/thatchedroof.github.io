@@ -1,1 +1,0 @@
-C:\Users\tnert\OneDrive\Documents\GitHub\thatchedroof.github.io\taikyoku-shogi\target\wasm32-unknown-unknown\release\taikyoku_shogi.wasm: C:\Users\tnert\OneDrive\Documents\GitHub\thatchedroof.github.io\taikyoku-shogi\src\lib.rs C:\Users\tnert\OneDrive\Documents\GitHub\thatchedroof.github.io\taikyoku-shogi\src\utils.rs
