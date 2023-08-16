@@ -1,3 +1,4 @@
+// TODO: This version of monzo is old, use the version in the monzo repo
 export const Frac = (inp1, inp2) => {
     if (typeof inp1 === 'object' && 'decimal' in inp1) {
         return inp1;

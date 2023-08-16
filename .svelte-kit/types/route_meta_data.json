@@ -1,0 +1,27 @@
+{
+	"/": [
+		"src/routes/+layout.ts",
+		"src/routes/+layout.ts"
+	],
+	"/auto-acronym": [
+		"src/routes/+layout.ts"
+	],
+	"/box-game": [
+		"src/routes/+layout.ts"
+	],
+	"/funny": [
+		"src/routes/+layout.ts"
+	],
+	"/partition-game": [
+		"src/routes/+layout.ts"
+	],
+	"/picture-game": [
+		"src/routes/+layout.ts"
+	],
+	"/sort": [
+		"src/routes/+layout.ts"
+	],
+	"/split-message-2000-chars": [
+		"src/routes/+layout.ts"
+	]
+}

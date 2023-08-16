@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/box-game/+page.svelte";

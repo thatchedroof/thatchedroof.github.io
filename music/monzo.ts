@@ -1,3 +1,5 @@
+// TODO: This version of monzo is old, use the version in the monzo repo
+
 export type BaseInterval = {
     cents: () => Cents;
     ratio: () => Ratio;

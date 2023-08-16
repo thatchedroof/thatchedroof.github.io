@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/split-message-2000-chars/+page.svelte";
