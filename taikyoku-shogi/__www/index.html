@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Hello wasm-pack!</title>
+
+        <link rel="stylesheet" href="main.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="https://use.typekit.net/vjj1zgs.css" />
+    </head>
+    <body>
+        <h1 class="">tai·kyo·ku shō·gi</h1>
+
+        <p class="shogi-text">山鹿</p>
+
+        <div class="center-container" id="panzoom-container">
+            <div id="board-container">
+                <div class="squares"></div>
+
+                <object id="board" data="board.svg" type="image/svg+xml">
+                    taikyoku shōgi board
+                </object>
+            </div>
+        </div>
+        <noscript
+            >This page contains webassembly and javascript content, please
+            enable javascript in your browser.</noscript
+        >
+        <script src="panzoom.js"></script>
+        <script src="./bootstrap.js"></script>
+    </body>
+</html>
