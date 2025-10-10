@@ -190,7 +190,8 @@ export default function Home() {
 
           return Matter.Bodies.rectangle(x, y, segmentLength, ropeWidth, {
             collisionFilter: { group: group },
-            // chamfer: 5,
+            // @ts-ignore
+            chamfer: 5,
             density: 0.003,
             frictionAir: 0.01,
             render: { fillStyle: color },
