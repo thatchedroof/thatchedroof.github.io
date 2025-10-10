@@ -35,11 +35,22 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "pnpm"
 
+      - name: Install Rust (stable) + wasm32 target
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      
+      - name: Install wasm-pack
+        uses: jetli/wasm-pack-action@v0.3.1
+        with:
+          version: 'latest'
+      
       - name: Install dependencies
-        run: pnpm install
-
+        run: pnpm install --frozen-lockfile
+      
       - name: Build
         run: pnpm run build
+
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
