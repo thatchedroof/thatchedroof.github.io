@@ -51,7 +51,7 @@ export default function Home() {
       canvas.current.height = window.innerHeight
 
       function renderCustom() {
-        ctx.clearRect(0, 0, canvas.current.width, canvas.current.height)
+        ctx.clearRect(0, 0, canvas.current!.width, canvas.current!.height)
 
         const constraints = Composite.allConstraints(engine.world)
 
@@ -62,7 +62,7 @@ export default function Home() {
               let pointA
               let pointB
 
-              if (constraint.render.asBody) {
+              if ((constraint.render as any).asBody) {
                 pointA = constraint.bodyA?.position ?? constraint.pointA
               } else if (constraint.bodyA?.position) {
                 let { x: x1, y: y1 } = constraint.bodyA.position
@@ -72,7 +72,7 @@ export default function Home() {
                 pointA = constraint.pointA
               }
 
-              if (constraint.render.asBody) {
+              if ((constraint.render as any).asBody) {
                 pointB = constraint.bodyB?.position ?? constraint.pointB
               } else if (constraint.bodyB?.position) {
                 let { x: x1, y: y1 } = constraint.bodyB.position
@@ -98,7 +98,7 @@ export default function Home() {
         for (let body of bodies.toReversed()) {
           const vertices = body.vertices
 
-          if (body.render.shadow) {
+          if ((body.render as any).shadow) {
             ctx.shadowColor = 'rgba(0,0,0,0.2)'
             ctx.shadowBlur = 10
             ctx.shadowOffsetX = 5
@@ -122,30 +122,30 @@ export default function Home() {
           }
 
           // Stroke
-          if (body.render.stroke) {
-            ctx.strokeStyle = body.render.stroke
+          if ((body.render as any).stroke) {
+            ctx.strokeStyle = (body.render as any).stroke
             ctx.lineWidth = body.render.lineWidth ?? 1
             ctx.stroke()
           }
 
-          if (body.render.text) {
+          if ((body.render as any).text) {
             ctx.save()
             ctx.translate(body.position.x, body.position.y)
             ctx.rotate(body.angle)
-            ctx.fillStyle = body.render.stroke || '#000'
+            ctx.fillStyle = (body.render as any).stroke || '#000'
             ctx.font = '20px Arial'
             ctx.textAlign = 'center'
-            ctx.fillText(body.render.text, 0, 0)
+            ctx.fillText((body.render as any).text, 0, 0)
             ctx.restore()
           }
 
-          if (body.render.isBox) {
+          if ((body.render as any).isBox) {
             setBox({
               x: body.position.x,
               y: body.position.y,
               angle: body.angle,
-              width: body.render.width,
-              height: body.render.height,
+              width: (body.render as any).width,
+              height: (body.render as any).height,
             })
           }
 
@@ -160,7 +160,7 @@ export default function Home() {
       let steps = 0
 
       ;(function run(time?: number) {
-        Engine.update(engine, TIME_STEP)
+        Matter.Engine.update(engine, TIME_STEP)
         renderCustom()
         steps += 1
         window.requestAnimationFrame(run)
@@ -169,26 +169,34 @@ export default function Home() {
       throw new Error('Canvas not initialized')
     }
 
-    let runner = Runner.create()
-    Runner.run(runner, engine)
+    let runner = Matter.Runner.create()
+    Matter.Runner.run(runner, engine)
 
-    let group = Body.nextGroup(true)
+    let group = Matter.Body.nextGroup(true)
 
     function createRope(x: number, y: number, numSegments: number, segmentLength: number, ropeWidth: number) {
-      return Composites.stack(x, y, 1, numSegments, 10, 10, function (x: number, y: number, r: number, c: number) {
-        let color1 = '#B39863'
-        let color2 = '#B39863'
+      return Matter.Composites.stack(
+        x,
+        y,
+        1,
+        numSegments,
+        10,
+        10,
+        function (x: number, y: number, r: number, c: number) {
+          let color1 = '#B39863'
+          let color2 = '#B39863'
 
-        let color = c % 2 === 0 ? color1 : color2
+          let color = c % 2 === 0 ? color1 : color2
 
-        return Bodies.rectangle(x, y, segmentLength, ropeWidth, {
-          collisionFilter: { group: group },
-          chamfer: 5,
-          density: 0.003,
-          frictionAir: 0.01,
-          render: { fillStyle: color },
-        })
-      })
+          return Matter.Bodies.rectangle(x, y, segmentLength, ropeWidth, {
+            collisionFilter: { group: group },
+            // chamfer: 5,
+            density: 0.003,
+            frictionAir: 0.01,
+            render: { fillStyle: color },
+          })
+        },
+      )
     }
 
     let n = 15
@@ -208,7 +216,7 @@ export default function Home() {
     let leftRope = createRope(ropeLeftX, ropeY, n, ropeLength, ropeWidth)
     let rightRope = createRope(ropeRightX, ropeY, n, ropeLength, ropeWidth)
 
-    let weight = Bodies.rectangle(signX, signY, signWidth, signHeight, {
+    let weight = Matter.Bodies.rectangle(signX, signY, signWidth, signHeight, {
       collisionFilter: { group: group },
       //   density: 0.02,
       frictionAir: 0.00001,
@@ -220,12 +228,12 @@ export default function Home() {
         width: signWidth,
         height: signHeight,
         shadow: true,
-      },
+      } as any,
     })
-    Body.applyForce(weight, weight.position, { x: -0.5, y: 0 })
+    Matter.Body.applyForce(weight, weight.position, { x: -0.5, y: 0 })
 
     // Add the weight and both rope composites to the world
-    Composite.add(world, [weight, leftRope, rightRope])
+    Matter.Composite.add(world, [weight, leftRope, rightRope])
 
     const breakThreshold = 30
 
@@ -252,7 +260,7 @@ export default function Home() {
 
     let chainDistance = 0.3
 
-    let leftChain = Composites.chain(leftRope, chainDistance, 0, -chainDistance, 0, {
+    let leftChain = Matter.Composites.chain(leftRope, chainDistance, 0, -chainDistance, 0, {
       stiffness: 0.99,
       length: 0.0001,
       render: {
@@ -262,7 +270,7 @@ export default function Home() {
         asBody: true,
       },
     })
-    let rightChain = Composites.chain(rightRope, chainDistance, 0, -chainDistance, 0, {
+    let rightChain = Matter.Composites.chain(rightRope, chainDistance, 0, -chainDistance, 0, {
       stiffness: 0.99,
       length: 0.0001,
       render: {
@@ -276,9 +284,9 @@ export default function Home() {
     monitorConstraintBreaking(leftChain.constraints)
     monitorConstraintBreaking(rightChain.constraints)
 
-    Composite.add(
+    Matter.Composite.add(
       world,
-      Constraint.create({
+      Matter.Constraint.create({
         bodyA: leftRope.bodies[leftRope.bodies.length - 1],
         pointA: { x: 0, y: 0 },
         bodyB: weight,
@@ -293,9 +301,9 @@ export default function Home() {
       }),
     )
 
-    Composite.add(
+    Matter.Composite.add(
       world,
-      Constraint.create({
+      Matter.Constraint.create({
         bodyA: rightRope.bodies[rightRope.bodies.length - 1],
         pointA: { x: 0, y: 0 },
         bodyB: weight,
@@ -310,9 +318,9 @@ export default function Home() {
       }),
     )
 
-    Composite.add(
+    Matter.Composite.add(
       world,
-      Constraint.create({
+      Matter.Constraint.create({
         pointA: {
           x: leftRope.bodies[0].position.x,
           y: leftRope.bodies[0].position.y,
@@ -326,13 +334,13 @@ export default function Home() {
           lineWidth: ropeWidth,
           strokeStyle: '#B39863',
           asBody: true,
-        },
+        } as any,
       }),
     )
 
-    Composite.add(
+    Matter.Composite.add(
       world,
-      Constraint.create({
+      Matter.Constraint.create({
         pointA: {
           x: rightRope.bodies[0].position.x,
           y: rightRope.bodies[0].position.y,
@@ -346,12 +354,12 @@ export default function Home() {
           lineWidth: ropeWidth,
           strokeStyle: '#B39863',
           asBody: true,
-        },
+        } as any,
       }),
     )
 
-    let mouse = Mouse.create(canvas.current)
-    let mouseConstraint = MouseConstraint.create(engine, {
+    let mouse = Matter.Mouse.create(canvas.current)
+    let mouseConstraint = Matter.MouseConstraint.create(engine, {
       mouse: mouse,
       constraint: {
         stiffness: 0.2,
@@ -362,7 +370,7 @@ export default function Home() {
       },
     })
 
-    Composite.add(world, mouseConstraint)
+    Matter.Composite.add(world, mouseConstraint)
 
     // Event.on(mouseConstraint, "startdrag", function (event) {
     //   const body = event.body;
@@ -377,8 +385,8 @@ export default function Home() {
     //   }
     // });
 
-    mouse.element.removeEventListener('wheel', mouse.mousewheel)
-    mouse.element.removeEventListener('DOMMouseScroll', mouse.mousewheel)
+    // mouse.element.removeEventListener('wheel', mouse.mousewheel)
+    // mouse.element.removeEventListener('DOMMouseScroll', mouse.mousewheel)
   }, [])
 
   return (
